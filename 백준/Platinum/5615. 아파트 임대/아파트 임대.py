@@ -6,9 +6,10 @@
 # if n < 4,759,123,141, it is enough to test a = 2, 7, and 61 (from wikipedia)
 prime_list = [2, 7, 61]
 def is_prime(n: int):
+    # prime_list의 원소들을 미리 소수로 처리
     if n in prime_list:
         return True
-    # 짝수는 소수가 아님
+    # 1과 짝수는 소수가 아님
     if n == 1 or n % 2 == 0:
         return False
     # (n-1) = 2^s * d
