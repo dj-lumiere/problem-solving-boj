@@ -13,10 +13,10 @@ prime_list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
 
 
 def is_prime(n: int):
-    # 2, 3, 5, 7, 11, 13을 미리 소수로 처리
+    # prime_list의 원소들을 미리 소수로 처리
     if n in prime_list:
         return True
-    # 짝수는 소수가 아님
+    # 1과 짝수는 소수가 아님
     if n == 1 or n % 2 == 0:
         return False
     # (n-1) = 2^s * d
