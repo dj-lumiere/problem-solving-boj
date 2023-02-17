@@ -12,7 +12,9 @@ from sys import setrecursionlimit
 setrecursionlimit(10000)
 
 N = int(input())
-prime_list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
+
+# if n < 3,825,123,056,546,413,051, it is enough to test a = 2, 3, 5, 7, 11, 13, 17, 19, and 23 (from wikipedia)
+prime_list = [2, 3, 5, 7, 11, 13, 17, 19, 23]
 
 
 def is_prime(n: int):
