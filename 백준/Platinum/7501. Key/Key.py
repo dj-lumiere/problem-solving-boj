@@ -42,6 +42,7 @@ for i in range(A, B + 1):
     if i % 2:
         if is_prime(i):
             possible_values.append(i)
+        # 9는 예외적으로 조건을 만족하므로 possible_values에 
         elif i == 9:
             possible_values.append(i)
 print(*possible_values, sep=" ")
