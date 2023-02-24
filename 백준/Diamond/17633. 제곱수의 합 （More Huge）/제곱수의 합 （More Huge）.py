@@ -82,13 +82,17 @@ while next_N > 1:
 factor_dict = Counter(factors)
 
 def sol() -> int:
+    # 4**n * (8k+7) 형태의 숫자면 최소 4개 필요
     if (N // (4 ** (factor_dict[2] // 2))) % 8 == 7:
         return 4
+    # 제곱수면 1개면 충분
     elif int(N**.5)**2 == N:
         return 1
     else:
         for (i, j) in factor_dict.items():
+            # (4k+3)**(2l+1) 형태의 인수가 존재하면 3개
             if i % 4 == 3 and j % 2 == 1:
                 return 3
+        # 아니면 2개
         return 2
 print(sol())
