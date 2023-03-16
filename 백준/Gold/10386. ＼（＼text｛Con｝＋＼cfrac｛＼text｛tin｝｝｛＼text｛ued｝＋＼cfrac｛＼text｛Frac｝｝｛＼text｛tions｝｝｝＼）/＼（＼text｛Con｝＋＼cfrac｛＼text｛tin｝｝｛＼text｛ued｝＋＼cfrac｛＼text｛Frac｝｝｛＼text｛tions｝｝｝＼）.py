@@ -6,19 +6,8 @@ from math import floor
 
 def fraction_to_continued_fractions(target_fraction: Fraction) -> list[int]:
     target_fraction_list: list[int] = []
-    if target_fraction > 0:
-        while True:
-            if target_fraction.denominator == 1:
-                target_fraction_list.append(int(target_fraction))
-                break
-            else:
-                target_fraction_list.append(int(target_fraction))
-                target_fraction -= int(target_fraction)
-                target_fraction = 1 / target_fraction
-    elif target_fraction == 0:
-        target_fraction_list.append(0)
-    else:
-        target_fraction_list_0th_for_negative_target_fraction = floor(target_fraction)
+    if target_fraction != 0:
+        target_fraction_list_0th = floor(target_fraction)
         target_fraction -= floor(target_fraction)
         while True:
             if target_fraction.denominator == 1:
@@ -28,7 +17,9 @@ def fraction_to_continued_fractions(target_fraction: Fraction) -> list[int]:
                 target_fraction_list.append(int(target_fraction))
                 target_fraction -= int(target_fraction)
                 target_fraction = 1 / target_fraction
-        target_fraction_list[0] = target_fraction_list_0th_for_negative_target_fraction
+        target_fraction_list[0] = target_fraction_list_0th
+    else:
+        target_fraction_list.append(0)
     return target_fraction_list
 
 
