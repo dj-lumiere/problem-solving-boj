@@ -1,0 +1,1 @@
+print(*[f"{i+1}. {input()}" for i in range(int(input()))],sep="\n")
