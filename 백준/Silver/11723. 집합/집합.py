@@ -1,40 +1,27 @@
-import sys
+# 11723 집합
 
-def set_implementation():
-    N = int(sys.stdin.readline())
-    user_set = [False for i in range(20+1)]
-    set_size = 0
-    for i in range(N):
-        opcode = sys.stdin.readline().rstrip()
-        try:
-            opcode, operand = opcode.split(" ")
-            operand = int(operand)
-            if opcode == "add":
-                if not user_set[operand]:
-                    user_set[operand] = True
-                    set_size += 1
-            elif opcode == "remove":
-                if user_set[operand]:
-                    user_set[operand] = False
-                    set_size -= 1
-            elif opcode == "check":
-                if user_set[operand]:
-                    sys.stdout.writelines("1\n")
-                else:
-                    sys.stdout.writelines("0\n")
-            elif opcode == "toggle":
-                if user_set[operand]:
-                    user_set[operand] = False
-                    set_size -= 1
-                else:
-                    user_set[operand] = True
-                    set_size += 1
-        except:
-            if opcode == "all":
-                user_set = [True for i in range(0,20+1)]
-                set_size = 20
-            elif opcode == "empty":
-                user_set = [False for i in range(0,20+1)]
-                set_size = 0
+from sys import stdin, stdout
 
-set_implementation()
+N: int = int(stdin.readline())
+user_set: int = 0
+all_on: int = (1 << 21) - 1
+all_off: int = 0
+for i in range(N):
+    opcode, *operand_list = stdin.readline().rstrip().split(" ")
+    if operand_list:
+        operand = int(operand_list[0])
+    else:
+        operand = 0
+    if opcode == "add":
+        user_set = user_set | (1 << operand)
+    elif opcode == "remove":
+        user_set = user_set & (all_on ^ (1 << operand))
+    elif opcode == "check":
+        stdout.writelines(str((user_set & (1 << operand)) >> operand))
+        stdout.writelines("\n")
+    elif opcode == "toggle":
+        user_set = user_set ^ (1 << operand)
+    elif opcode == "all":
+        user_set = all_on
+    elif opcode == "empty":
+        user_set = all_off
