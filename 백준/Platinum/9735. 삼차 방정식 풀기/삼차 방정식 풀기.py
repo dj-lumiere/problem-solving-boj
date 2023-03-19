@@ -7,13 +7,17 @@ for i in range(T):
     # 계수 로딩
     a, b, c, d = list(map(Decimal, input().split(" ")))
     root_list = []
-    for i in range(0, 1000000 + 1):
-        if a * i**3 + b * i**2 + c * i + d == 0:
-            root_list.append(Decimal(i))
-            break
-        elif -a * i**3 + b * i**2 - c * i + d == 0:
-            root_list.append(Decimal(-i))
-            break
+    if d == 0:
+        root_list.append(Decimal(0))
+    else:
+        for i in range(1, 1000000 + 1):
+            if a % i == 0 or d % i == 0:
+                if a * i**3 + b * i**2 + c * i + d == 0:
+                    root_list.append(Decimal(i))
+                    break
+                elif a * i**3 - b * i**2 + c * i - d == 0:
+                    root_list.append(Decimal(-i))
+                    break
     a, b = a, b + a * root_list[-1]
     b, c = b, c + b * root_list[-1]
     c, d = c, d + c * root_list[-1]
