@@ -1,7 +1,7 @@
 # 17071 숨바꼭질 5
 
-from collections import deque, namedtuple
-from typing import Callable, NamedTuple
+from collections import deque
+from typing import Callable
 
 sibling_pos: Callable[[int, int], int] = lambda K, t: K + t * (t + 1) // 2
 mov_left: Callable[[int], int] = lambda x: x - 1
