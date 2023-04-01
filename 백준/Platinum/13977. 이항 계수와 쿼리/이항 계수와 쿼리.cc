@@ -1,3 +1,5 @@
+/* 13977 이항 계수와 쿼리 */
+
 #include <bits/stdc++.h>
 #include <iostream>
 #include <math.h>
