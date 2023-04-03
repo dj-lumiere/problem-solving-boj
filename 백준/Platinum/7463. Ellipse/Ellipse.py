@@ -2,6 +2,7 @@
 
 from fractions import Fraction
 from decimal import Decimal
+from sys import stdin
 
 pi = Decimal("3.141592653589793238462643383279")
 
@@ -178,11 +179,6 @@ def dots_to_equation_matrix(values: list[int]) -> list[list[int]]:
     return matrix
 
 
-def is_solvable(matrix: list[list[int]]) -> bool:
-    det = quintic_matrix_determinant(matrix)
-    return bool(det)
-
-
 def get_area(ellipse_equation: list[Fraction]) -> str:
     # 타원을 Ax^2+2Hxy+By^2+2Gx+2Fy+C=0 형태로 나타내기
     A, H, B, G, F, C = ellipse_equation
@@ -206,15 +202,15 @@ def get_area(ellipse_equation: list[Fraction]) -> str:
         result: Decimal = (
             pi * is_real_decimal / (is_ellipse_decimal * is_ellipse_decimal.sqrt())
         )
-        answer = f"{result:.6f}"
+        answer = f"{result:.10f}"
     else:
         answer = "IMPOSSIBLE"
     return answer
 
 
-k = int(input())
+k = int(stdin.readline().strip())
 for _ in range(k):
-    values = [int(i) for i in input().split(" ") if i]
+    values = [int(i) for i in stdin.readline().strip().split(" ") if i]
     for i in range(5):
         values = [i + 1001 for i in values]
     # 일단 Ax^2+Bxy+Cy^2+Dx+Ey=1 형태로 만들기
@@ -224,21 +220,23 @@ for _ in range(k):
     is_solvable_check: bool = True
     shift_one_block: bool = False
     ellipse_equation: list[Fraction] = []
+    answer: str = ""
     # 1번이 풀이 가능하면 그냥 품
-    if is_solvable(matrix):
+    if quintic_matrix_determinant(matrix):
         shift_one_block = False
     # 1번이 풀이 불가능하면 상수항이 0일 수 있으니
-    elif is_solvable(matrix2):
+    elif quintic_matrix_determinant(matrix2):
         shift_one_block = True
     else:
         is_solvable_check = False
     if is_solvable_check and shift_one_block:
         # 상수항 대신 x^2 계수를 1로 고정함
         ellipse_equation = [Fraction(1)] + gaussian_elimination(matrix2, 5)
-        print(get_area(ellipse_equation))
+        answer = get_area(ellipse_equation)
     elif is_solvable_check and not shift_one_block:
         # 타원을 형성하기 위한 5원1차 연립방정식을 우변이 1이 되게 풀었으므로, 이항하면 C = -1
         ellipse_equation = gaussian_elimination(matrix, 5) + [Fraction(-1)]
-        print(get_area(ellipse_equation))
+        answer = get_area(ellipse_equation)
     else:
-        print("IMPOSSIBLE")
+        answer = "IMPOSSIBLE"
+    print(answer)
