@@ -8,7 +8,7 @@
 
 ### 분류
 
-수학(math), 밀러–라빈 소수 판별법(miller_rabin), 정수론(number_theory), 폴라드 로(pollard_rho), 소수 판정(primality_test)
+수학, 정수론, 소수 판정, 폴라드 로, 밀러–라빈 소수 판별법
 
 ### 문제 설명
 

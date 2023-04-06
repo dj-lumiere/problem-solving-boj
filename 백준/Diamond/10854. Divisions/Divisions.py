@@ -11,16 +11,14 @@ from collections import Counter
 setrecursionlimit(10000)
 
 N = int(input())
-
-# if n < 3,825,123,056,546,413,051, it is enough to test a = 2, 3, 5, 7, 11, 13, 17, 19, and 23 (from wikipedia)
-prime_list = [2, 3, 5, 7, 11, 13, 17, 19, 23]
+prime_list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
 
 
 def is_prime(n: int):
-    # prime_list의 원소들을 미리 소수로 처리
+    # 2, 3, 5, 7, 11, 13을 미리 소수로 처리
     if n in prime_list:
         return True
-    # 1과 짝수는 소수가 아님
+    # 짝수는 소수가 아님
     if n == 1 or n % 2 == 0:
         return False
     # (n-1) = 2^s * d
