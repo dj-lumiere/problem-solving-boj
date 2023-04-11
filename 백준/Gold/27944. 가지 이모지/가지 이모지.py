@@ -26,9 +26,7 @@ prime_list = find_prime(10**6)
 
 N = int(input())
 A = list(map(int, input().split(" ")))
-prime_factors1 = [i for i in prime_list if A[0] % i == 0]
-prime_factors2 = [i for i in prime_list if (A[0] + 1) % i == 0]
-prime_checklist = list(set(prime_factors1 + prime_factors2))
+prime_checklist = [i for i in prime_list if A[0] % i == 0 or (A[0] + 1) % i == 0]
 is_answer = True
 answer = 1
 
