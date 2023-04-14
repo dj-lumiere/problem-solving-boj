@@ -1,9 +1,7 @@
+/* 1067 이동 */
+
 #include <bits/stdc++.h>
 
-#pragma GCC optimize("O3")
-#pragma GCC optimize("Ofast")
-#pragma GCC optimize("unroll-loops")
-#pragma GCC target("avx,avx2")
 
 #define int128 __int128_t
 #define int64 int64_t
