@@ -1,3 +1,5 @@
+/* 17467 N! mod P (2) */
+
 #include <iostream>
 #include <algorithm>
 #include <complex>
@@ -194,7 +196,6 @@ list<int64> lagrange(list<int64>& h, int64 mod) {
             lagrange_sub1[i] = multiply_mod(factorial[i], inverse_factorial[i - (dimension + 1)], mod);
         }
     }
-    //good
 
     /* part 2 : 1/(i!(dimension-i)!(-1)^(dimension-i))*/
     list<int64> lagrange_sub2(dimension + 1);
@@ -212,7 +213,6 @@ list<int64> lagrange(list<int64>& h, int64 mod) {
             lagrange_sub2[i] = 0;
         }
     }
-    //NG...? why?
 
     /* part 3 : 1/(x-i)*/
     list<int64> inverse_number(4 * dimension + 2);
