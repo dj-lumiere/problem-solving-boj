@@ -16,17 +16,15 @@ def loading_list() -> list[int]:
 
 def tiling_number(n: int) -> int:
     # f(n) = 2*f(n-2)+f(n-1)
-    memo = [1, 3]
+    memo = [1, 1]
     if n == 0:
         return 1
     elif n == 1:
         return 1
-    elif n == 2:
-        return 3
     else:
-        for i in range(n - 2):
+        for i in range((n - 2) + 1):
             memo[i % 2] = 2 * memo[(i - 2) % 2] + memo[(i - 1) % 2]
-        return memo[(n - 1) % 2]
+        return memo[n % 2]
 
 
 def main():

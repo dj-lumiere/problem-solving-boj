@@ -4,11 +4,11 @@
 
 ### 성능 요약
 
-메모리: 31256 KB, 시간: 52 ms
+메모리: 31256 KB, 시간: 48 ms
 
 ### 분류
 
-다이나믹 프로그래밍, 임의 정밀도 / 큰 수 연산
+임의 정밀도 / 큰 수 연산, 다이나믹 프로그래밍
 
 ### 문제 설명
 
@@ -16,7 +16,7 @@
 
 <p>아래 그림은 2×17 직사각형을 채운 한가지 예이다.</p>
 
-<p style="text-align: center;"><img alt="" src="https://www.acmicpc.net/upload/images/t2n2122.gif" style="height:59px; width:380px"></p>
+<p style="text-align: center;"><img alt="" src="" style="height:59px; width:380px"></p>
 
 ### 입력 
 
