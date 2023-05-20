@@ -1,9 +1,9 @@
 # 9935 문자열 폭발
 
-letter_list = list(input())
-explosion_list = list(input())
-explosion_length = len(explosion_list)
-after_explosion = []
+letter_list: list[str] = list(input())
+explosion_list: list[str] = list(input())
+explosion_length: int = len(explosion_list)
+after_explosion: list[str] = []
 for i, j in enumerate(letter_list):
     after_explosion.append(j)
     if explosion_list[-1] == j:
