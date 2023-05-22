@@ -1,4 +1,4 @@
-# [Silver II] 중력 큐 - 28078 
+# [Silver I] 중력 큐 - 28078 
 
 [문제 링크](https://www.acmicpc.net/problem/28078) 
 
