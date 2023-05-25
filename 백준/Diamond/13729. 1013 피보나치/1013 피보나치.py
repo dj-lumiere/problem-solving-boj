@@ -23,15 +23,17 @@ def matrix_square(matrix: list[list[int]], mod: int) -> list[list[int]]:
     return matrix_multiply(matrix, matrix, mod)
 
 
+# A**(2**n)에 대한 행렬을 세팅해두기
+global matrix_powered_dict, initial_matrix
+matrix_powered_dict = dict()
+matrix_powered_dict[0] = [[1, 1], [1, 0]]
+initial_matrix = [1, 0]
+for i in range(64):
+    matrix_powered_dict[i + 1] = matrix_square(matrix_powered_dict[i], 10**13)
+
 def fib_matrix(index: int, mod: int) -> int:
-    # A**(2**n)에 대한 행렬을 세팅해두기
-    matrix_powered_dict = dict()
-    matrix_powered_dict[0] = [[1, 1], [1, 0]]
-    initial_matrix = [1, 0]
-    max_digit_in_binary = index.bit_length()
-    for i in range(max_digit_in_binary):
-        matrix_powered_dict[i + 1] = matrix_square(matrix_powered_dict[i], mod)
-    binary_index = [index // (2**i) % 2 for i in range(max_digit_in_binary)]
+    global matrix_powered_dict, initial_matrix
+    binary_index = [index // (2**i) % 2 for i in range(64)]
     # 2*2 단위 행렬 세팅
     final_matrix = [[1 if i == j else 0 for i in range(2)] for j in range(2)]
     # binary_index의 원소 중 1인 것들만 곱하기
