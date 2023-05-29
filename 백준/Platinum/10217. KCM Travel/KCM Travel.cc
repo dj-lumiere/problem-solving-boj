@@ -49,6 +49,13 @@ typedef tuple<int32, int32, int32> Node;
 
 vector<vector<Node>> graph_list;
 
+None fastIO()
+{
+    std::cin.tie(NULL);
+    std::cout.tie(NULL);
+    std::ios_base::sync_with_stdio(false);
+}
+
 None graphify(int32 ticket_count)
 {
     for (int32 i = 0; i < ticket_count; i++)
@@ -111,6 +118,7 @@ None dijkstra(int32 init, int32 dst, int32 cost_limit)
 
 int32 main()
 {
+    fastIO();
     int32 T;
     cin >> T;
     for (int32 t = 0; t < T; t++)
