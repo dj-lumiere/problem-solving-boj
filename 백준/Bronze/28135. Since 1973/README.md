@@ -1,14 +1,14 @@
-# [Bronze IV] Since 1973 - 28135 
+# [Bronze III] Since 1973 - 28135 
 
 [문제 링크](https://www.acmicpc.net/problem/28135) 
 
 ### 성능 요약
 
-메모리: 31256 KB, 시간: 1148 ms
+메모리: 31256 KB, 시간: 396 ms
 
 ### 분류
 
-구현
+브루트포스 알고리즘, 구현, 문자열
 
 ### 문제 설명
 
