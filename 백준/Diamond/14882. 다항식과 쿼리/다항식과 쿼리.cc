@@ -1,17 +1,8 @@
 /* 14882 다항식과 쿼리 */
 
 #include <iostream>
-#include <fstream>
 #include <algorithm>
-#include <complex>
-#include <random>
-#include <unordered_map>
-#include <unordered_set>
-#include <deque>
-#include <queue>
-#include <cmath>
-#include <list>
-#include <set>
+#include <stdint-gcc.h>
 
 #pragma GCC optimize("O3")
 #pragma GCC optimize("Ofast")
@@ -21,57 +12,15 @@
 using namespace std;
 
 typedef __int128_t int128;
-typedef int64_t int64;
+typedef int_fast64_t int64;
 typedef int32_t int32;
-typedef __uint128_t uint128;
-typedef uint64_t uint64;
-typedef uint32_t uint32;
-typedef long double float80;
-typedef double float64;
-typedef float float32;
-typedef complex<float80> complex80;
-typedef complex<float64> complex64;
-typedef complex<float32> complex32;
 typedef string str;
 typedef void None;
 #define vec std::vector
-#define linked_list std::list
-#define dict std::unordered_map
-#define tree_set std::set
-#define heap std::priority_queue
 #define print std::cout
 #define input std::cin
-#define append std::push_back
-#define appendleft std::push_front
-#define popleft std::pop_front
 constexpr int64 MOD = 786433;
 
-std::ostream &operator<<(std::ostream &os, vec<int64> &target)
-{
-    os << target.size() << "\n";
-    for (int64 index = 0; index < target.size(); index++)
-    {
-        os << target[index];
-        if (index + 1 != target.size())
-        {
-            os << "\n";
-        }
-    }
-    return os;
-}
-
-std::ofstream &operator<<(std::ofstream &ofs, vec<int64> &target)
-{
-    for (int64 index = 0; index < target.size(); index++)
-    {
-        ofs << target[index];
-        if (index + 1 != target.size())
-        {
-            ofs << "\n";
-        }
-    }
-    return ofs;
-}
 int64 multiply_mod(int64 a, int64 b, int64 mod)
 {
     return (int64)((int128)a * b % mod);
