@@ -74,14 +74,14 @@ None dijkstra(int32 init, int32 dst, int32 cost_limit)
     }
     else
     {
-        priority_queue<Node, vector<Node>, greater<Node>> heap;
-        heap.push(make_tuple(0, 0, init));
+        deque<Node> heap;
+        heap.push_back(make_tuple(0, 0, init));
         vector<vector<int32>> time_cost_list(dst + 1, vector<int32>(cost_limit + 1, INF));
         time_cost_list[init][0] = 0;
         while (not heap.empty())
         {
-            Node current_node = heap.top();
-            heap.pop();
+            Node current_node = heap[0];
+            heap.pop_front();
             int32 time = get<0>(current_node);
             int32 cost = get<1>(current_node);
             int32 vertex = get<2>(current_node);
@@ -100,7 +100,7 @@ None dijkstra(int32 init, int32 dst, int32 cost_limit)
                 if ((next_cost <= cost_limit) and (next_time < time_cost_list[get<2>(next_node)][next_cost]))
                 {
                     time_cost_list[get<2>(next_node)][next_cost] = next_time;
-                    heap.push(make_tuple(next_time, next_cost, get<2>(next_node)));
+                    heap.push_back(make_tuple(next_time, next_cost, get<2>(next_node)));
                 }
             }
         }
