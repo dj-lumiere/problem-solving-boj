@@ -29,7 +29,7 @@
 #define print std::cout
 #define input std::cin
 #define None void
-#define pi (float80)3.14159265358979323846264338327950288419716939937510
+#define pi (float64)3.14159265358979323846264338327950288419716939937510
 
 None print_list(list<int64>& A) {
     print << "[";
@@ -43,7 +43,7 @@ None print_list(list<int64>& A) {
     }
 }
 
-None fft(list<complex80>& a, bool invert)
+None fft(list<complex64>& a, bool invert)
 {
     int64 n = a.size();
     // Bit-reversal permutation
@@ -59,9 +59,9 @@ None fft(list<complex80>& a, bool invert)
             std::swap(a[i], a[j]);
         }
     }
-    list<complex80> root_of_unity(n / 2);
+    list<complex64> root_of_unity(n / 2);
     for (int64 i = 0; i < n / 2; i++) {
-        float80 angle;
+        float64 angle;
         if (invert)
         {
             angle = -2 * pi / n;
@@ -70,7 +70,7 @@ None fft(list<complex80>& a, bool invert)
         {
             angle = 2 * pi / n;
         }
-        root_of_unity[i] = complex80(cos(angle * i), sin(angle * i));
+        root_of_unity[i] = complex64(cos(angle * i), sin(angle * i));
     }
     // 실제 FFT 계산
     for (int64 len = 2; len <= n; len <<= 1)
@@ -81,8 +81,8 @@ None fft(list<complex80>& a, bool invert)
         {
             for (int64 j = 0; j < len / 2; j++)
             {
-                complex80 u = a[i + j];
-                complex80 v = a[i + j + len / 2] * root_of_unity[step * j];
+                complex64 u = a[i + j];
+                complex64 v = a[i + j + len / 2] * root_of_unity[step * j];
                 a[i + j] = u + v;
                 a[i + j + len / 2] = u - v;
             }
@@ -102,18 +102,18 @@ list<int64> multiply_fft(list<int64>& v, list<int64>& w, int64 mod)
     {
         n <<= 1;
     }
-    list<complex80> v_split(n), w_split(n), result_sub1(n), result_sub2(n);
+    list<complex64> v_split(n), w_split(n), result_sub1(n), result_sub2(n);
     //리스트의 값을 반으로 쪼개 조금 더 효율적인 계산을 도모
     //17번째 자리를 기준으로 자름
     //v_split = v_front + i * v_rear
     for (int64 i = 0; i < (int64)v.size(); i++)
     {
-        v_split[i] = complex80(v[i] >> 17, v[i] & 131071);
+        v_split[i] = complex64(v[i] >> 17, v[i] & 131071);
     }
     //w_split = w_front + i * w_rear
     for (int64 i = 0; i < w.size(); i++)
     {
-        w_split[i] = complex80(w[i] >> 17, w[i] & 131071);
+        w_split[i] = complex64(w[i] >> 17, w[i] & 131071);
     }
     fft(v_split, 0);
     fft(w_split, 0);
@@ -126,12 +126,12 @@ list<int64> multiply_fft(list<int64>& v, list<int64>& w, int64 mod)
         else {
             j = i;
         }
-        complex80 new_v_front = (v_split[i] + std::conj(v_split[j])) * complex80(0.5, 0);
-        complex80 new_v_rear = (v_split[i] - std::conj(v_split[j])) * complex80(0, -0.5);
-        complex80 new_w_front = (w_split[i] + std::conj(w_split[j])) * complex80(0.5, 0);
-        complex80 new_w_rear = (w_split[i] - std::conj(w_split[j])) * complex80(0, -0.5);
-        result_sub1[i] = (new_v_front * new_w_front) + (new_v_front * new_w_rear) * complex80(0, 1);
-        result_sub2[i] = (new_v_rear * new_w_front) + (new_v_rear * new_w_rear) * complex80(0, 1);
+        complex64 new_v_front = (v_split[i] + std::conj(v_split[j])) * complex64(0.5, 0);
+        complex64 new_v_rear = (v_split[i] - std::conj(v_split[j])) * complex64(0, -0.5);
+        complex64 new_w_front = (w_split[i] + std::conj(w_split[j])) * complex64(0.5, 0);
+        complex64 new_w_rear = (w_split[i] - std::conj(w_split[j])) * complex64(0, -0.5);
+        result_sub1[i] = (new_v_front * new_w_front) + (new_v_front * new_w_rear) * complex64(0, 1);
+        result_sub2[i] = (new_v_rear * new_w_front) + (new_v_rear * new_w_rear) * complex64(0, 1);
     }
     fft(result_sub1, 1);
     fft(result_sub2, 1);
