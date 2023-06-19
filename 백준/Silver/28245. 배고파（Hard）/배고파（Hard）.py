@@ -1,8 +1,11 @@
+# 28245 배고파(Hard)
+
 from sys import stdin, stdout
+
 N = int(input())
 for _ in range(N):
     x = int(stdin.readline())
-    difference = 2**(x.bit_length() + 1)
+    difference = 2 ** (x.bit_length() + 1)
     index = [x.bit_length() - 1, x.bit_length() - 1]
     for i in range(x.bit_length() - 1, -1, -1):
         for j in range(x.bit_length() - 1, i - 1, -1):
