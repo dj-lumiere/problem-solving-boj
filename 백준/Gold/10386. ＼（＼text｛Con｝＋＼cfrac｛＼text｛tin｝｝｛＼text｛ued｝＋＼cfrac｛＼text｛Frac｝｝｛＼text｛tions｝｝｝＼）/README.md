@@ -1,14 +1,14 @@
-# [Gold I] \(\text{Con}+\cfrac{\text{tin}}{\text{ued}+\cfrac{\text{Frac}}{\text{tions}}}\) - 10386 
+# [Gold II] \(\text{Con}+\cfrac{\text{tin}}{\text{ued}+\cfrac{\text{Frac}}{\text{tions}}}\) - 10386 
 
 [문제 링크](https://www.acmicpc.net/problem/10386) 
 
 ### 성능 요약
 
-메모리: 39628 KB, 시간: 324 ms
+메모리: 39620 KB, 시간: 316 ms
 
 ### 분류
 
-수학, 사칙연산
+사칙연산, 수학
 
 ### 문제 설명
 
