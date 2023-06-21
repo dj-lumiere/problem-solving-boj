@@ -1,8 +1,8 @@
 # 1541 잃어버린 괄호
-from re import split
+import re
 
 formula = input()
-formula_splitted = split(r"(\+|\-)", formula)
+formula_splitted = re.split(r"(\+|\-)", formula)
 numbers_in_formula = []
 is_negative = False
 for i, v in enumerate(formula_splitted):
