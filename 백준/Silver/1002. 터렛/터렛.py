@@ -2,8 +2,10 @@ from sys import stdin, stdout
 
 def Turret(x1: int, y1: int, r1:int, x2: int, y2: int, r2: int) -> int:
     if x1 == x2 and y1 == y2:
-        if r1 == r2:
+        if r1 == r2 != 0:
             return -1
+        elif r1 == r2 == 0:
+            return 1
         else:
             return 0
     else:
