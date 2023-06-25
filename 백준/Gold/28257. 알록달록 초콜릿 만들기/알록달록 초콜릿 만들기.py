@@ -1,4 +1,4 @@
-# C번 - 알록달록 초콜릿 만들기
+# 28257 알록달록 초콜릿 만들기
 from sys import stdin, stdout
 
 input = stdin.readline
@@ -7,7 +7,7 @@ print = stdout.write
 
 def find_line_number(index: int) -> int:
     start = 0
-    end = 10**16 + 1
+    end = 250_000_000
     while start + 1 < end:
         mid = (start + end) // 2
         if find_blue_count(mid) > index:
