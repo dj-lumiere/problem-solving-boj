@@ -1,14 +1,18 @@
 /* 26038 지수 · 로그와 테일러 다항식(Small) */
 
 #include <iostream>
-#include <stdint-gcc.h>
-#include <array>
+#include <stdint.h>
+#include <complex>
+#include <cmath>
 #include <vector>
 #include <queue>
+#include <list>
+#include <set>
+#include <map>
 #include <algorithm>
 #include <fstream>
-#include <tuple>
-#include <cmath>
+#include <random>
+#include <chrono>
 
 #pragma GCC optimize("O3")
 #pragma GCC optimize("Ofast")
@@ -17,27 +21,39 @@
 
 using namespace std;
 
-typedef __int128_t int128;
-typedef int64_t int64;
-typedef int32_t int32;
-typedef __uint128_t uint128;
-typedef uint64_t uint64;
-typedef uint32_t uint32;
-typedef long double float80;
-typedef double float64;
-typedef float float32;
-typedef void None;
-#define vec vector
-#define linked_list list
-#define dict unordered_map
-#define set unordered_set
-#define heap priority_queue
+using int128 = __int128_t;
+using int64 = int64_t;
+using int32 = int32_t;
+using uint128 = __uint128_t;
+using uint64 = uint64_t;
+using uint32 = uint32_t;
+using float80 = long double;
+using float64 = double;
+using float32 = float;
+using complex80 = complex<float80>;
+using complex64 = complex<float64>;
+using complex32 = complex<float32>;
+using str = string;
+using None = void;
+template <typename T>
+using vec = std::vector<T>;
+template <typename T>
+using linked_list = std::list<T>;
+template <typename T, typename U>
+using dict = std::map<T, U>;
+template <typename T>
+using set = std::set<T>;
+template <typename T>
+using heap = std::priority_queue<T>;
 #define print cout
 #define input cin
 #define append push_back
+#define appendleft push_front
+#define pop pop_back
+#define popleft pop_front
 
-constexpr int64 MOD = 998244353;
-constexpr int64 ROOT = 3;
+const int32 MOD = 998244353;
+const int32 ROOT = 3;
 
 // Print vector
 template <typename element>
@@ -54,85 +70,101 @@ std::ostream &operator<<(std::ostream &os, const std::vector<element> &target)
     return os;
 }
 
-int64 multiply_mod(int64 a, int64 b, int64 mod)
+int32 multiply_mod(int32 a, int32 b)
 {
-    return (int64)((int128)a * b % mod);
-};
+    return static_cast<int32>((static_cast<int64>(a) * b) % MOD);
+}
 
-int64 power_with_mod(int64 base, int64 index, int64 mod)
+int32 power_with_mod(int32 base, int32 index)
 {
-    int64 answer = 1;
+    int32 answer = 1;
     while (index)
     {
         if (index & 1)
         {
-            answer = multiply_mod(answer, base, mod);
+            answer = multiply_mod(answer, base);
         }
-        base = multiply_mod(base, base, mod);
+        base = multiply_mod(base, base);
         index >>= 1;
     }
     return answer;
 }
 
-int64 modular_inverse(int64 base, int64 mod)
+int32 modular_inverse(int32 base)
 {
-    return power_with_mod(base, mod - 2, mod);
+    return power_with_mod(base, MOD - 2);
 }
 
-None ntt(vec<int64> &a, bool invert, int64 root, int64 mod)
+int32 degree_conversion(int32 a)
 {
-    int64 n = a.size();
+    return static_cast<int32>(ceil(log2(a)));
+}
 
-    for (int64 i = 1, j = 0; i < n; ++i)
+None bit_reversal_permutation(vec<int32> &a)
+{
+    int32 n = a.size();
+    for (int32 i = 1, j = 0; i < n; ++i)
     {
-        int64 bit = n >> 1;
+        int32 bit = n >> 1;
         for (; j & bit; bit >>= 1)
         {
             j ^= bit;
         }
         j ^= bit;
-
         if (i < j)
         {
-            std::swap(a[i], a[j]);
+            swap(a[i], a[j]);
         }
     }
+}
 
-    vec<int64> root_of_unity(n / 2,0);
-    int64 angle;
+None coefficient_normalization(vec<int32> &a)
+{
+    int32 n = a.size();
+    int32 n_inv = modular_inverse(n);
+    for (int32 i = 0; i < n; ++i)
+    {
+        a[i] = multiply_mod(a[i], n_inv);
+    }
+}
+
+None ntt(vec<int32> &a, bool invert)
+{
+    int32 n = a.size();
+    bit_reversal_permutation(a);
+    vec<int32> root_of_unity(n / 2, 0);
+    int32 angle;
     if (invert)
     {
-        angle = mod - 1 - (mod - 1) / n;
+        angle = MOD - 1 - (MOD - 1) / n;
     }
     else
     {
-        angle = (mod - 1) / n;
+        angle = (MOD - 1) / n;
     }
     root_of_unity[0] = 1;
-    int64 angleth_power = power_with_mod(root, angle, mod);
-    for (int64 i = 1; i < n / 2; ++i)
+    int32 angleth_power = power_with_mod(ROOT, angle);
+    for (int32 i = 1; i < n / 2; ++i)
     {
-        root_of_unity[i] = multiply_mod(root_of_unity[i-1],angleth_power,mod);
+        root_of_unity[i] = multiply_mod(root_of_unity[i - 1], angleth_power);
     }
-
-    for (int64 len = 2; len <= n; len <<= 1)
+    for (int32 len = 2; len <= n; len <<= 1)
     {
-        int64 step = n / len;
-        for (int64 i = 0; i < n; i += len)
+        int32 step = n / len;
+        for (int32 i = 0; i < n; i += len)
         {
-            int64 w = 1;
-            for (int64 j = 0; j < len / 2; ++j)
+            for (int32 j = 0; j < len / 2; j++)
             {
-                int64 u = a[i + j];
-                int64 v = (a[i + j + len / 2] * root_of_unity[step * j]) % mod;
+                int32 u = a[i + j];
+                int32 v = multiply_mod(a[i + j + len / 2], root_of_unity[step * j]);
                 // limit the value in range [0, mod)
-                if (u + v < mod)
+                if (u + v < MOD)
                 {
                     a[i + j] = u + v;
                 }
                 else
                 {
-                    a[i + j] = u + v - mod;
+                    a[i + j] = u + v - MOD;
                 }
                 if (u - v >= 0)
                 {
@@ -140,165 +172,164 @@ None ntt(vec<int64> &a, bool invert, int64 root, int64 mod)
                 }
                 else
                 {
-                    a[i + j + len / 2] = u - v + mod;
+                    a[i + j + len / 2] = u - v + MOD;
                 }
             }
         }
     }
-    // Normalize
     if (invert)
     {
-        int64 n_inv = modular_inverse(n, mod);
-        for (int64 i = 0; i < n; ++i)
-        {
-            a[i] = multiply_mod(a[i], n_inv, mod);
-        }
+        coefficient_normalization(a);
     }
 }
 
-vec<int64> multiply_ntt(vec<int64> &a, vec<int64> &b)
+vec<int32> multiply_ntt(vec<int32> &a, vec<int32> &b)
 {
-    vec<int64> transformed_a1(a.begin(), a.end());
-    vec<int64> transformed_b1(b.begin(), b.end());
+    vec<int32> transformed_a1(a.begin(), a.end());
+    vec<int32> transformed_b1(b.begin(), b.end());
     // 리스트 사이즈 변경
-    int32 n = 1;
-    while (n < a.size() + b.size())
-    {
-        n <<= 1;
-    }
+    int32 n = 1 << degree_conversion(a.size() + b.size());
     transformed_a1.resize(n);
     transformed_b1.resize(n);
-    ntt(transformed_a1, false, ROOT, MOD);
-    ntt(transformed_b1, false, ROOT, MOD);
-    for (int64 i = 0; i < n; i++)
+    ntt(transformed_a1, false);
+    ntt(transformed_b1, false);
+    for (int32 i = 0; i < n; i++)
     {
-        transformed_a1[i] = multiply_mod(transformed_a1[i], transformed_b1[i], MOD);
+        transformed_a1[i] = multiply_mod(transformed_a1[i], transformed_b1[i]);
     }
-    ntt(transformed_a1, true, ROOT, MOD);
+    ntt(transformed_a1, true);
     return transformed_a1;
 }
 
-int64 degree_conversion(int64 a)
+vec<int32> minus_list(vec<int32> &a)
 {
-    return static_cast<int64>(ceil(log2(a)));
-}
-
-vec<int64> minus_list(vec<int64> &a)
-{
-    vec<int64> result(a.begin(), a.end());
-    for (int64 index = 0; index < a.size(); index++)
+    vec<int32> result(a.begin(), a.end());
+    for (int32 index = 0; index < a.size(); index++)
     {
-        result[index] = (MOD - result[index]) % MOD;
+        result[index] = MOD - result[index];
+        if (result[index] == MOD)
+        {
+            result[index] -= MOD;
+        }
     }
     return result;
 }
 
-vec<int64> add_list(vec<int64> &a, vec<int64> &b)
+vec<int32> add_list(vec<int32> &a, vec<int32> &b)
 {
-    vec<int64> result(min(a.size(), b.size()), 0);
-    for (int64 index = 0; index < result.size(); index++)
+    vec<int32> result(min(a.size(), b.size()), 0);
+    for (int32 index = 0; index < result.size(); index++)
     {
-        result[index] += (a[index] + b[index]) % MOD;
+        result[index] = a[index] + b[index];
+        if (result[index] >= MOD)
+        {
+            result[index] -= MOD;
+        }
     }
     return result;
 }
 
-vec<int64> derivation(vec<int64> &target)
+vec<int32> derivation(vec<int32> &target)
 {
-    vec<int64> result;
-    for (int64 index = 1; index < target.size(); index++)
+    vec<int32> result;
+    for (int32 index = 1; index < target.size(); index++)
     {
-        result.append(multiply_mod(index, target[index], MOD));
+        result.append(multiply_mod(index, target[index]));
     }
     return result;
 }
 
-vec<int64> integration(vec<int64> &target, int64 C)
+vec<int32> integration(vec<int32> &target, int32 C)
 {
-    vec<int64> result;
+    vec<int32> result;
     result.append(C);
-    for (int64 index = 0; index < target.size(); index++)
+    for (int32 index = 0; index < target.size(); index++)
     {
-        result.append(multiply_mod(modular_inverse(index + 1, MOD), target[index], MOD));
+        result.append(multiply_mod(modular_inverse(index + 1), target[index]));
     }
     return result;
 }
 
-vec<int64> find_inverse(vec<int64> &target)
+vec<int32> find_inverse(vec<int32> &target)
 {
-    int64 degree = degree_conversion(target.size());
-    target.resize(1<<degree);
-    int64 result_length = 1;
-    vec<int64> result(result_length, 0);
+    int32 degree = degree_conversion(target.size());
+    target.resize(1 << degree);
+    int32 result_length = 1;
+    vec<int32> result(result_length, 0);
     result[0] = 1;
-    for (int64 iteration = 0; iteration < degree; iteration++)
+    for (int32 iteration = 0; iteration < degree; iteration++)
     {
         result_length <<= 1;
         result.resize(result_length);
-        vec<int64> target_sub(target.begin(), target.begin() + result_length);
-        vec<int64> right_term_sub = multiply_ntt(result, target_sub);
-        vec<int64> right_term = minus_list(right_term_sub);
+        vec<int32> target_sub(target.begin(), target.begin() + result_length);
+        vec<int32> right_term_sub = multiply_ntt(result, target_sub);
+        vec<int32> right_term = minus_list(right_term_sub);
         right_term[0] += 2;
         result = multiply_ntt(result, right_term);
         result.resize(result_length);
-        //print << iteration << " " << result << "\n";
     }
-    for (int64 index=0;index < result_length;index++){
+    for (int32 index = 0; index < result_length; index++)
+    {
         result[index] += MOD;
-        result[index] %= MOD;
+        if (result[index] >= MOD)
+        {
+            result[index] -= MOD;
+        }
     }
     return result;
 }
 
-vec<int64> find_log(vec<int64> &target, int64 N)
+vec<int32> find_log(vec<int32> &target, int32 N)
 {
-    if ((target.size() == 1) and target[0] == 1){
+    if ((target.size() == 1) and target[0] == 1)
+    {
         return {0};
     }
-    vec<int64> target_inverse = find_inverse(target);
-    //print <<"target_inverse "<<target_inverse<<"\n";
-    vec<int64> target_prime = derivation(target);
-    //print <<"target_prime "<<target_prime<<"\n";
-    vec<int64> result_sub = multiply_ntt(target_inverse, target_prime);
-    result_sub.resize(N+1);
-    vec<int64> result = integration(result_sub, 0);
+    vec<int32> target_inverse = find_inverse(target);
+    vec<int32> target_prime = derivation(target);
+    vec<int32> result_sub = multiply_ntt(target_inverse, target_prime);
+    result_sub.resize(N + 1);
+    vec<int32> result = integration(result_sub, 0);
     result.pop_back();
-    //print << result << "\n";
     return result;
 }
 
-vec<int64> find_exp(vec<int64> &target, int64 N)
+vec<int32> find_exp(vec<int32> &target, int32 N)
 {
-    int64 degree = degree_conversion(N+1);
-    target.resize(1<<degree);
-    int64 result_length = 1;
-    vec<int64> result(result_length, 0);
+    int32 degree = degree_conversion(N + 1);
+    target.resize(1 << degree);
+    int32 result_length = 1;
+    vec<int32> result(result_length, 0);
     result[0] = 1;
-    for (int64 iteration = 0; iteration < degree; iteration++)
+    for (int32 iteration = 0; iteration < degree; iteration++)
     {
         result_length <<= 1;
         result.resize(result_length);
-        vec<int64> target_sub(target.begin(), target.begin() + result_length);
-        vec<int64> log_result = find_log(result, result_length-1);
+        vec<int32> target_sub(target.begin(), target.begin() + result_length);
+        vec<int32> log_result = find_log(result, result_length - 1);
         log_result = minus_list(log_result);
-        vec<int64> right_term = add_list(target, log_result);
+        vec<int32> right_term = add_list(target, log_result);
         right_term[0] += 1;
         result = multiply_ntt(result, right_term);
         result.resize(result_length);
-        //print << iteration << " " << result << "\n";
     }
-    result.resize(N+1);
+    result.resize(N + 1);
     result[0] -= 1;
     return result;
 }
-
+None fastIO()
+{
+    std::cin.tie(NULL);
+    std::cout.tie(NULL);
+    std::ios_base::sync_with_stdio(false);
+}
 int32 main()
 {
-    int64 N = 0;
-    int64 element = 0;
-    vec<int64> f, f2;
+    int32 N = 0;
+    int32 element = 0;
+    vec<int32> f, f2;
     input >> N;
-    for (int64 index = 0; index < N + 1; index++)
+    for (int32 index = 0; index < N + 1; index++)
     {
         input >> element;
         f.append(element);
