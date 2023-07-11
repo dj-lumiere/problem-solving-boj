@@ -13,12 +13,14 @@ for ptr_i in range(N-2):
     ptr_k = N-1
     while ptr_j < ptr_k:
         neutrality_sub = num_list[ptr_i]+num_list[ptr_j]+num_list[ptr_k]
-        if neutrality > abs(neutrality_sub):
+        if neutrality > abs(num_list[ptr_i]+num_list[ptr_j]+num_list[ptr_k]):
             ptr = [ptr_i, ptr_j, ptr_k]
-            neutrality = abs(neutrality_sub)
+            neutrality = abs(num_list[ptr_i]+num_list[ptr_j]+num_list[ptr_k])
         if neutrality_sub > 0:
             ptr_k -= 1
-        else:
+        elif neutrality_sub < 0:
             ptr_j += 1
+        else:
+            break
 
 print(" ".join(map(str, list(num_list[i] for i in ptr))))
