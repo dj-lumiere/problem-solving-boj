@@ -1,38 +1,40 @@
 # 1081 합
 
-# 1019 책 페이지
-from math import log10
+from itertools import product
+from math import log10, floor
 
-L, U = list(map(int, input().split(" ")))
+
+def digit_length(target: int) -> int:
+    return floor(log10(target)) + 1
+
+
+def find_ith_digit(end: int, digit_pos: int) -> int:
+    return (end // (10 ** (digit_pos - 1))) % 10
+
+
+def find_count(end: int, digit_pos: int, target: int) -> int:
+    digit = find_ith_digit(end, digit_pos)
+    result = end // (10**digit_pos) * (10 ** (digit_pos - 1))
+    if target < digit:
+        result += 10 ** (digit_pos - 1)
+    elif target == digit:
+        result += end % (10 ** (digit_pos - 1)) + 1
+    return result
 
 
 def number_frequency(end: int):
+    num_list = [0 for i in range(10)]
     if end == 0:
-        return [1] + [0] * 9
-    else:
-        num_list = [0 for i in range(0, 9 + 1)]
-        digit = int(log10(end)) + 1
-        # 모든 자릿수의 앞에 0을 붙인 형태로 자릿수를 전부 맞추기
-        # 루프를 돌면서 해당하는 자릿수의 갯수를 구하기
-        for i in range(1, digit + 1):
-            ith_digit = (end // (10 ** (i - 1))) % 10
-            for j in range(0, 9 + 1):
-                if j < (ith_digit):
-                    num_list[j] += ((end // (10**i)) + 1) * (10 ** (i - 1))
-                elif j == (ith_digit):
-                    num_list[j] += (
-                        (end // (10**i)) * (10 ** (i - 1)) + end % (10 ** (i - 1)) + 1
-                    )
-                else:
-                    num_list[j] += (end // (10**i)) * (10 ** (i - 1))
-        # 추가적으로 붙은 0에 대해서 보정하기
-        for i in range(0, digit):
-            num_list[0] -= 10**i
-        num_list[0] += 1
         return num_list
+    digit = digit_length(end)
+    for i, j in product(range(1, digit + 1), range(10)):
+        num_list[j] += find_count(end, i, j)
+    for i in range(digit):
+        num_list[0] -= 10**i
+    return num_list
 
 
+L, U = map(int, input().split(" "))
 U_list = number_frequency(U)
-L_list = [0] * 10 if L < 1 else number_frequency(L - 1)
-
+L_list = number_frequency(max(0, L - 1))
 print(sum((i - j) * k for k, (i, j) in enumerate(zip(U_list, L_list))))
