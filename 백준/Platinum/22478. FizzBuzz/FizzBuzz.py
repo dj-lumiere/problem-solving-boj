@@ -12,34 +12,26 @@ def find_fizzbuzz_string_length(upper_bound: int) -> int:
         return 0
     upper_bound_digit: int = digit_length(upper_bound)
     fizzbuzz_string_length: list[int] = [0 for i in range(upper_bound_digit + 1)]
-    for i, v in enumerate(fizzbuzz_string_length):
+    for i, _ in enumerate(fizzbuzz_string_length):
         if i == 0:
             continue
-        number_lower_limit: int = 10 ** (i - 1)
-        number_upper_limit: int = min(upper_bound, 10**i - 1)
-        fizzbuzz_string_length[i] += (number_upper_limit - number_lower_limit + 1) * i
-        fizz_only_count: int = number_upper_limit // 3 - (number_lower_limit - 1) // 3
-        buzz_only_count: int = number_upper_limit // 5 - (number_lower_limit - 1) // 5
-        fizzbuzz_only_count: int = (
-            number_upper_limit // 15 - (number_lower_limit - 1) // 15
-        )
-        fizz_only_count -= fizzbuzz_only_count
-        buzz_only_count -= fizzbuzz_only_count
-        fizzbuzz_string_length[i] -= (
-            fizz_only_count + buzz_only_count + fizzbuzz_only_count
-        ) * i
-        fizzbuzz_string_length[i] += (
-            fizz_only_count + buzz_only_count + fizzbuzz_only_count * 2
-        ) * 4
+        lower_limit: int = 10 ** (i - 1)
+        upper_limit: int = min(upper_bound, 10**i - 1)
+        fizzbuzz_string_length[i] += (upper_limit - lower_limit + 1) * i
+        fizzbuzz_count: int = upper_limit // 15 - (lower_limit - 1) // 15
+        fizz_count: int = upper_limit // 3 - (lower_limit - 1) // 3 - fizzbuzz_count
+        buzz_count: int = upper_limit // 5 - (lower_limit - 1) // 5 - fizzbuzz_count
+        fizzbuzz_string_length[i] -= (fizz_count + buzz_count + fizzbuzz_count) * i
+        fizzbuzz_string_length[i] += (fizz_count + buzz_count + fizzbuzz_count * 2) * 4
     return sum(fizzbuzz_string_length)
 
 
 def find_minimal_number(length: int) -> tuple[int, int]:
-    lower_bound = 0
-    upper_bound = length + 1
+    lower_bound: int = 0
+    upper_bound: int = length + 1
     while lower_bound + 1 < upper_bound:
-        mid = (lower_bound + upper_bound) // 2
-        fizzbuzz_string_length_until_mid = find_fizzbuzz_string_length(mid)
+        mid: int = (lower_bound + upper_bound) // 2
+        fizzbuzz_string_length_until_mid: int = find_fizzbuzz_string_length(mid)
         if fizzbuzz_string_length_until_mid > length:
             upper_bound = mid
         elif fizzbuzz_string_length_until_mid <= length:
@@ -49,21 +41,21 @@ def find_minimal_number(length: int) -> tuple[int, int]:
 
 def find_string(position):
     lower_limit_for_contain, leftover = find_minimal_number(position - 1)
-    answer = ""
-    next_number = lower_limit_for_contain + 1
-    next_length = 20
+    answer: str = ""
+    next_number: int = lower_limit_for_contain + 1
+    next_length: int = 20
     while next_length > 0:
-        number_to_string = ""
+        next_str: str = ""
         if not next_number % 15:
-            number_to_string = "FizzBuzz"
+            next_str = "FizzBuzz"
         elif not next_number % 5:
-            number_to_string = "Buzz"
+            next_str = "Buzz"
         elif not next_number % 3:
-            number_to_string = "Fizz"
+            next_str = "Fizz"
         else:
-            number_to_string = str(next_number)
-        answer += number_to_string[leftover:]
-        next_length -= len(number_to_string) - leftover
+            next_str = str(next_number)
+        answer += next_str[leftover:]
+        next_length -= len(next_str) - leftover
         next_number += 1
         leftover = 0
     return answer[:20]
