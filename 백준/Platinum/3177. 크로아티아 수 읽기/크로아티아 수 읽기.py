@@ -1,13 +1,14 @@
 # 3177 크로아티아 수열
+
 from math import log10, floor
 
 
-one_digit_initial = "AJDTXPXSOD"  # (1~9)
-teen_digit_initial = "DJDTXPXSOD"  # (10~19)
-two_digit_initial = "AADTXPXSOD"  # (20~90)
-three_digit_initial = "ASDTXPXSOD"  # (100~900)
-four_digit_initial = "ATDTXPXSOD"  # (1000~9000)
-seven_digit_initial = "AMDTXPXSOD"  # (1000~9000)
+ONE_DIGIT_INITIAL = "AJDTXPXSOD"
+TEEN_DIGIT_INITIAL = "DJDTXPXSOD"
+TWO_DIGIT_INITIAL = "AADTXPXSOD"
+THREE_DIGIT_INITIAL = "ASDTXPXSOD"
+FOUR_DIGIT_INITIAL = "ATDTXPXSOD"
+SEVEN_DIGIT_INITIAL = "AMDTXPXSOD"
 
 
 def digit_length(target: int) -> int:
@@ -37,11 +38,9 @@ def count_removable_number(
 
 def count_initials_at_ith_digit(upper_limit: int, digit_order: int) -> dict[str, int]:
     result = {"D": 0, "J": 0, "M": 0, "O": 0, "P": 0, "S": 0, "T": 0, "X": 0, "A": 0}
-    digit_initials = select_digit_string(digit_order)
     if digit_order % 3 == 1:
-        subresult = count_initials_teens(upper_limit, digit_order - 1)
-        for key, value in subresult.items():
-            result[key] += value
+        result = count_initials_teens(upper_limit, digit_order - 1)
+    digit_initials = select_digit_string(digit_order)
     for i in range(10):
         removable_number = count_removable_number(upper_limit, digit_order, i, False)
         result[digit_initials[i]] += removable_number
@@ -52,21 +51,21 @@ def count_initials_teens(upper_limit: int, digit_order: int) -> dict[str, int]:
     result = {"D": 0, "J": 0, "M": 0, "O": 0, "P": 0, "S": 0, "T": 0, "X": 0, "A": 0}
     for i in range(10):
         removable_number = count_removable_number(upper_limit, digit_order, i, True)
-        result[teen_digit_initial[i]] += removable_number
+        result[TEEN_DIGIT_INITIAL[i]] += removable_number
     return result
 
 
 def select_digit_string(digit_order: int) -> str:
     if digit_order == 0:
-        return one_digit_initial
+        return ONE_DIGIT_INITIAL
     if digit_order == 3:
-        return four_digit_initial
+        return FOUR_DIGIT_INITIAL
     if digit_order % 3 == 0:
-        return seven_digit_initial
+        return SEVEN_DIGIT_INITIAL
     if digit_order % 3 == 1:
-        return two_digit_initial
+        return TWO_DIGIT_INITIAL
     if digit_order % 3 == 2:
-        return three_digit_initial
+        return THREE_DIGIT_INITIAL
     return ""
 
 
