@@ -119,11 +119,6 @@ int64_t power_with_mod(int64_t base, int64_t index, int64_t mod)
     return answer;
 }
 
-int64_t next_iteration(int64_t x, int64_t n, int64_t random_number)
-{
-    return (power_with_mod(x, 2, n) + random_number + n) % n;
-}
-
 bool is_composite(int64_t n, int64_t power_of_two, int64_t remainder, int64_t base)
 {
     int64_t temp_base = power_with_mod(base, remainder, n);
@@ -144,7 +139,7 @@ bool is_composite(int64_t n, int64_t power_of_two, int64_t remainder, int64_t ba
 
 bool is_prime(int64_t n)
 {
-    vector<int64_t> base_prime_list = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41};
+    vector<int64_t> base_prime_list = {2, 7, 61};
     if (find(base_prime_list.begin(), base_prime_list.end(), n) != base_prime_list.end())
     {
         return true;
@@ -167,68 +162,6 @@ bool is_prime(int64_t n)
         }
     }
     return true;
-}
-
-int64_t find_single_prime_factor(int64_t n)
-{
-    if (is_prime(n))
-    {
-        return n;
-    }
-    if (n % 2 == 0)
-    {
-        return 2;
-    }
-    if (n == 1)
-    {
-        return 1;
-    }
-    int64_t x = randint(2, n - 1);
-    int64_t y = x;
-    int64_t random_number = randint(2, n - 1);
-    int64_t gcd_value = 1;
-    while (gcd_value == 1)
-    {
-        x = next_iteration(x, n, random_number);
-        y = next_iteration(next_iteration(y, n, random_number), n, random_number);
-        gcd_value = gcd(abs(x - y), n);
-        if (gcd_value == n)
-        {
-            return find_single_prime_factor(n);
-        }
-    }
-    if (is_prime(gcd_value))
-    {
-        return gcd_value;
-    }
-    return find_single_prime_factor(gcd_value);
-}
-
-map<int64_t, int64_t> factorize_large_number(int64_t N)
-{
-    int64_t temp_N = N;
-    vector<int64_t> factors;
-    vector<int64_t> base_prime_list = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41};
-    for (auto prime : base_prime_list)
-    {
-        while (temp_N % prime == 0)
-        {
-            factors.push_back(prime);
-            temp_N /= prime;
-        }
-    }
-    while (temp_N > 1)
-    {
-        int64_t factor = find_single_prime_factor(temp_N);
-        factors.push_back(factor);
-        temp_N /= factor;
-    }
-    map<int64_t, int64_t> count_map;
-    for (auto factor : factors)
-    {
-        count_map[factor]++;
-    }
-    return count_map;
 }
 
 None fastIO()
