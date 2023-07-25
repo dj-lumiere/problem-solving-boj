@@ -4,11 +4,11 @@
 
 ### 성능 요약
 
-메모리: 30616 KB, 시간: 36 ms
+메모리: 2024 KB, 시간: 0 ms
 
 ### 분류
 
-확장 유클리드 호제법(extended_euclidean), 수학(math), 모듈로 곱셈 역원(modular_multiplicative_inverse), 정수론(number_theory)
+확장 유클리드 호제법, 수학, 모듈로 곱셈 역원, 정수론
 
 ### 문제 설명
 
