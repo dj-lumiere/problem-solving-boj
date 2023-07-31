@@ -32,20 +32,20 @@ std::ostream &operator<<(std::ostream &os, const std::vector<element> &target)
 
 namespace ntt
 {
-    const uint64_t MOD = 1002772198720536577;
+    const uint64_t MOD = 4255901651992313857;
     const uint32_t INT32_BITMASK = 0xffffffff;
 
-    const uint32_t MOD1 = 998244353;
-    const uint64_t MOD1_MAGIC = 155014655926305585;
-    const uint32_t MOD1_MULINV = 669690699;
-    const uint32_t MOD1_SHIFT = 23;
-    const uint32_t ROOT1 = 3;
+    const uint32_t MOD1 = 2013265921;
+    const uint64_t MOD1_MAGIC = 2459565875272927297;
+    const uint32_t MOD1_MULINV = 21;
+    const uint32_t MOD1_SHIFT = 28;
+    const uint32_t ROOT1 = 31;
 
-    const uint32_t MOD2 = 1004535809;
-    const uint64_t MOD2_MAGIC = 154043791693913158;
-    const uint32_t MOD2_MULINV = 332747959;
-    const uint32_t MOD2_SHIFT = 23;
-    const uint32_t ROOT2 = 3;
+    const uint32_t MOD2 = 2113929217;
+    const uint64_t MOD2_MAGIC = 2342443690791526205;
+    const uint32_t MOD2_MULINV = 2013265901;
+    const uint32_t MOD2_SHIFT = 28;
+    const uint32_t ROOT2 = 5;
 
     uint64_t multiply_int128_high(uint64_t a, uint64_t b);
     int64_t merge_remainder(int32_t remainder1, int32_t remainder2);
