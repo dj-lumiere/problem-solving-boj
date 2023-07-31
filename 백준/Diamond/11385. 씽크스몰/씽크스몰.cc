@@ -14,22 +14,6 @@
 #define print std::cout
 #define input std::cin
 
-template <typename element>
-std::ostream &operator<<(std::ostream &os, const std::vector<element> &target)
-{
-    os << "[";
-    for (auto it = target.begin(); it != target.end(); ++it)
-    {
-        os << *it;
-        if (std::next(it) != target.end())
-        {
-            os << ", ";
-        }
-    }
-    os << "]";
-    return os;
-}
-
 namespace ntt
 {
     const uint64_t MOD = 4255901651992313857;
@@ -68,27 +52,24 @@ namespace ntt
 
 uint64_t ntt::multiply_int128_high(uint64_t a, uint64_t b)
 {
-    uint64_t a_high = a >> 32;
-    uint64_t a_low = a & INT32_BITMASK;
-    uint64_t b_high = b >> 32;
-    uint64_t b_low = b & INT32_BITMASK;
-    uint64_t product_high = a_high * b_high;
-    uint64_t product_low = a_low * b_low;
-    uint64_t product_mid1 = a_high * b_low;
-    uint64_t product_mid2 = a_low * b_high;
-    uint64_t carry = 0;
-    product_high += product_mid1 >> 32;
-    product_high += product_mid2 >> 32;
-    if (product_low > product_low + ((product_mid1 & INT32_BITMASK) << 32))
-    {
-        carry += 1;
-    }
-    product_low += ((product_mid1 & INT32_BITMASK) << 32);
-    if (product_low > product_low + ((product_mid2 & INT32_BITMASK) << 32))
-    {
-        carry += 1;
-    }
-    product_low += ((product_mid2 & INT32_BITMASK) << 32);
+    register uint64_t a_high = a >> 32;
+    register uint64_t a_low = a & INT32_BITMASK;
+    register uint64_t b_high = b >> 32;
+    register uint64_t b_low = b & INT32_BITMASK;
+    register uint64_t product_high = a_high * b_high;
+    register uint64_t product_low = a_low * b_low >> 32;
+    register uint64_t product_mid1 = a_high * b_low;
+    register uint64_t product_mid2 = a_low * b_high;
+    register uint64_t product_mid1_high = product_mid1 >> 32;
+    register uint64_t product_mid1_low = product_mid1 & INT32_BITMASK;
+    register uint64_t product_mid2_high = product_mid2 >> 32;
+    register uint64_t product_mid2_low = product_mid2 & INT32_BITMASK;
+    register uint64_t carry = 0;
+    product_high += product_mid1_high;
+    product_high += product_mid2_high;
+    product_low += product_mid1_low;
+    product_low += product_mid2_low;
+    carry = product_low >> 32;
     product_high += carry; // Carry from the low 64 bits
     return product_high;
 }
