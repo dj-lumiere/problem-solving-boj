@@ -13,19 +13,18 @@ while bfs_deque:
     next_n, length_sub, path_tail_sub = bfs_deque.popleft()
     if next_n == N:
         break
-    else:
-        if next_n + 1 <= N and length_sub + 1 < path_length[next_n + 1]:
-            path_length[next_n + 1] = length_sub + 1
-            path_tail[next_n + 1] = next_n
-            bfs_deque.append((next_n + 1, length_sub + 1, next_n))
-        if next_n * 2 <= N and length_sub + 1 < path_length[next_n * 2]:
-            path_length[next_n * 2] = length_sub + 1
-            path_tail[next_n * 2] = next_n
-            bfs_deque.append((next_n * 2, length_sub + 1, next_n))
-        if next_n * 3 <= N and length_sub + 1 < path_length[next_n * 3]:
-            path_length[next_n * 3] = length_sub + 1
-            path_tail[next_n * 3] = next_n
-            bfs_deque.append((next_n * 3, length_sub + 1, next_n))
+    if next_n + 1 <= N and length_sub + 1 < path_length[next_n + 1]:
+        path_length[next_n + 1] = length_sub + 1
+        path_tail[next_n + 1] = next_n
+        bfs_deque.append((next_n + 1, length_sub + 1, next_n))
+    if next_n * 2 <= N and length_sub + 1 < path_length[next_n * 2]:
+        path_length[next_n * 2] = length_sub + 1
+        path_tail[next_n * 2] = next_n
+        bfs_deque.append((next_n * 2, length_sub + 1, next_n))
+    if next_n * 3 <= N and length_sub + 1 < path_length[next_n * 3]:
+        path_length[next_n * 3] = length_sub + 1
+        path_tail[next_n * 3] = next_n
+        bfs_deque.append((next_n * 3, length_sub + 1, next_n))
 path = [N]
 path_follower_sub = N
 while path_follower_sub:
