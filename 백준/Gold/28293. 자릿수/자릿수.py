@@ -2,8 +2,8 @@
 
 from decimal import Decimal, getcontext
 
-getcontext().prec = 30
+getcontext().prec = 60
 a, b = map(Decimal, input().split(" "))
 a = a.log10()
 a *= b
-print(int(a.__ceil__()))
+print(int(a.__floor__()) + 1)
