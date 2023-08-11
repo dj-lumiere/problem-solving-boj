@@ -4,7 +4,7 @@
 
 ### 성능 요약
 
-메모리: 205852 KB, 시간: 1372 ms
+메모리: 204828 KB, 시간: 1320 ms
 
 ### 분류
 
@@ -14,7 +14,7 @@
 
 <p>서양 장기인 체스에는 대각선 방향으로 움직일 수 있는 비숍(bishop)이 있다. < 그림 1 >과 같은 정사각형 체스판 위에 B라고 표시된 곳에 비숍이 있을 때 비숍은 대각선 방향으로 움직여 O로 표시된 칸에 있는 다른 말을 잡을 수 있다.</p>
 
-<p style="text-align: center;"><img alt="" src="https://upload.acmicpc.net/c3f4ac55-3e37-4bed-a381-7d407b2f9b4f/-/preview/" style="width: 211px; height: 212px;"></p>
+<p style="text-align: center;"><img alt="" src="" style="width: 211px; height: 212px;"></p>
 
 <p style="text-align: center;">< 그림 1 ></p>
 
