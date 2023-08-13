@@ -1,16 +1,16 @@
 # 20454 Кампус
 
 
+def find_floor_capacity(x: int, y: int, k: int, target: int) -> int:
+    return target * y - (target // k) * (y - x)
+
+
 def find_entrance_number_and_remainder(
     n: int, x: int, y: int, k: int, target: int
 ) -> tuple[int, int]:
-    entrance_capacity = n * y - (n // k) * (y - x)
+    entrance_capacity = find_floor_capacity(x, y, k, n)
     q, r = divmod(target - 1, entrance_capacity)
     return (q, r)
-
-
-def find_floor_capacity(x: int, y: int, k: int, target: int) -> int:
-    return target * y - (target // k) * (y - x)
 
 
 def find_floor_number(n: int, x: int, y: int, k: int, target: int) -> int:
