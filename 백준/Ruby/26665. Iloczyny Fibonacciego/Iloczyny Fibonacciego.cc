@@ -38,9 +38,9 @@ typedef void None;
 #define heap std::priority_queue
 #define print std::cout
 #define input std::cin
-#define append std::push_back
-#define appendleft std::push_front
-#define popleft std::pop_front
+#define append push_back
+#define appendleft push_front
+#define popleft pop_front
 constexpr float64 pi = 3.14159265358979323846264338327950288419716939937510;
 
 std::ostream &operator<<(std::ostream &os, vec<int64> &target)
