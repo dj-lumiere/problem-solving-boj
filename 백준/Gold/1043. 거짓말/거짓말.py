@@ -15,9 +15,13 @@ def union(x, y, parent):
 
 
 def find(x, parent):
-    if parent[x] != x:
-        parent[x] = find(parent[x], parent)
-    return parent[x]
+    nodes = []
+    while x != parent[x]:
+        nodes.append(x)
+        x = parent[x]
+    for node in nodes:
+        parent[node] = x
+    return x
 
 
 N, M = map(int, input().split(" "))
