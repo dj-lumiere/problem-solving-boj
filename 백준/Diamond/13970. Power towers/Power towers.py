@@ -1,6 +1,6 @@
 # 13970 Power towers
 from sys import stdin, setrecursionlimit
-setrecursionlimit(1000000)
+setrecursionlimit(1200000)
 
 
 def input():
