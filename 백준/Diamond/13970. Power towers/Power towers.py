@@ -1,5 +1,6 @@
 # 13970 Power towers
-from sys import stdin
+from sys import stdin, setrecursionlimit
+setrecursionlimit(200000)
 
 
 def input():
@@ -60,4 +61,4 @@ for _ in range(N):
         if v == 1:
             tower = tower[:i]
             break
-    print(power_tower(eulerphi, tower, 0, M) % M, end=" ")
+    print(power_tower(eulerphi, tower, 0, M) % M)
