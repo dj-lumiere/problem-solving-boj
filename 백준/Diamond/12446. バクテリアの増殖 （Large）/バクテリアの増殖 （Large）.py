@@ -41,10 +41,10 @@ def calculate(eulerphi: list[int], A: int, B: int, C: int) -> int:
     dp[-1] = [pow(A, A, mod_c_list[i]) for i in range(maximum_step)]
     if A <= 4:
         is_excessive[-1] = [
-            A**A > mod_c_list[i] for i in range(len(is_excessive[-1]))
+            A**A >= mod_c_list[i] for i in range(len(is_excessive[-1]))
         ]
     if A == 2 and B >= 2:
-        is_excessive[-2] = [256 > mod_c_list[i] for i in range(len(is_excessive[-2]))]
+        is_excessive[-2] = [256 >= mod_c_list[i] for i in range(len(is_excessive[-2]))]
     for j in range(-2, -B - 1, -1):
         for k in range(min(len(dp[j]), maximum_step - 1)):
             dp[j][k] = pow(
