@@ -33,14 +33,6 @@ def find_maximum_depth(eulerphi: list[int], B: int, C: int) -> tuple[list[int], 
 
 
 def calculate(eulerphi: list[int], A: int, B: int, C: int) -> int:
-    if A == 1:
-        return 1 % C
-    if B == 1:
-        return pow(A, A, C)
-    if C == 1:
-        return 0
-    if A == B == 2:
-        return 256 % C
     mod_c_list, maximum_step = find_maximum_depth(eulerphi, B, C)
     mod_c_list.append(1)
     maximum_step += 1
@@ -49,10 +41,10 @@ def calculate(eulerphi: list[int], A: int, B: int, C: int) -> int:
     dp[-1] = [pow(A, A, mod_c_list[i]) for i in range(maximum_step)]
     if A <= 4:
         is_excessive[-1] = [
-            A**A >= mod_c_list[i] for i in range(len(is_excessive[-1]))
+            A**A > mod_c_list[i] for i in range(len(is_excessive[-1]))
         ]
-    if A == 2:
-        is_excessive[-2] = [256 >= mod_c_list[i] for i in range(len(is_excessive[-2]))]
+    if A == 2 and B >= 2:
+        is_excessive[-2] = [256 > mod_c_list[i] for i in range(len(is_excessive[-2]))]
     for j in range(-2, -B - 1, -1):
         for k in range(min(len(dp[j]), maximum_step - 1)):
             dp[j][k] = pow(
@@ -60,7 +52,6 @@ def calculate(eulerphi: list[int], A: int, B: int, C: int) -> int:
                 dp[j + 1][k + 1] + mod_c_list[k + 1] * is_excessive[j + 1][k + 1],
                 mod_c_list[k],
             )
-    # print(mod_c_list, *is_excessive, *dp, sep="\n")
     return dp[0][0]
 
 
