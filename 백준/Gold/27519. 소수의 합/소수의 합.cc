@@ -94,10 +94,8 @@ vector<int32> extract_primes_from_sieve(int32 limit)
     return primes;
 }
 
-int32 main()
+vector<int32> calculate_result(int32 limit)
 {
-    fastIO();
-    int32 limit = 100000;
     vector<int32> prime_list = extract_primes_from_sieve(limit);
     int32 prime_count = prime_list.size();
     vector<vector<int32>> result(2, vector<int32>(limit + 1, 0));
@@ -127,13 +125,20 @@ int32 main()
             }
         }
     }
+    return result[toggle];
+}
 
+int32 main()
+{
+    fastIO();
+    int32 limit = 100000;
+    vector<int32> result = calculate_result(limit);
     int32 T;
     input >> T;
     for (int32 t = 0; t < T; ++t)
     {
         int32 n;
         input >> n;
-        print << result[toggle][n] << "\n";
+        print << result[n] << "\n";
     }
 }
