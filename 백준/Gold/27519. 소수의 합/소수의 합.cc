@@ -110,36 +110,17 @@ int32 main()
             int32 prime = prime_list[j];
             int32 toggle = j % 2;
             result[toggle][i] = 0;
-            if (i < prime)
+            if (i >= prime)
             {
-                result[toggle][i] += result[not toggle][i];
-                if (result[toggle][i] >= MOD)
-                {
-                    result[toggle][i] -= MOD;
-                }
-                continue;
+                result[toggle][i] += result[toggle][i - prime];
             }
 
             if (i == prime)
             {
                 result[toggle][i] += 1;
-                if (result[toggle][i] >= MOD)
-                {
-                    result[toggle][i] -= MOD;
-                }
             }
 
-            if (j == 0)
-            {
-                result[toggle][i] += result[toggle][i - prime];
-                if (result[toggle][i] >= MOD)
-                {
-                    result[toggle][i] -= MOD;
-                }
-                continue;
-            }
-
-            result[toggle][i] += (result[toggle][i - prime] + result[not toggle][i]);
+            result[toggle][i] += result[not toggle][i];
             if (result[toggle][i] >= MOD)
             {
                 result[toggle][i] -= MOD;
