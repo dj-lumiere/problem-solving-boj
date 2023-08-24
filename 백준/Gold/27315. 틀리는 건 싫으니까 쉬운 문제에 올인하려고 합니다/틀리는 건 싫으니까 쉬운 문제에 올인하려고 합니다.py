@@ -1,6 +1,6 @@
 # 27315 틀리는 건 싫으니까 쉬운 문제에 올인하려고 합니다
 
-from heapq import heappush, heappop, heapify
+from heapq import heappush, heappop
 from sys import stdin
 
 
@@ -46,8 +46,7 @@ def is_solvable(current_idea_ability, idea_difficulty):
     return current_idea_ability >= idea_difficulty
 
 
-def parse_problems(N):
-    problems = []
+def parse_problems(N, problems):
     for _ in range(N):
         idea_difficulty, implementation_difficulty, has_data, has_editorial = map(
             int, input().split(" ")
@@ -58,7 +57,6 @@ def parse_problems(N):
             idea_difficulty = (idea_difficulty + 1) // 2
             implementation_difficulty = implementation_difficulty // 2
         problems.append(sort_by_idea(idea_difficulty, implementation_difficulty))
-    return problems
 
 
 def find_solvable_problem(problems, current_idea_ability, solvable_problems):
@@ -69,7 +67,6 @@ def find_solvable_problem(problems, current_idea_ability, solvable_problems):
             heappush(problems, problem)
             break
         heappush(solvable_problems, sort_by_implementation(*problem))
-    return solvable_problems
 
 
 def minimize_wrong_answer_count(solvable_problems, current_implementation_ability):
@@ -80,7 +77,8 @@ def minimize_wrong_answer_count(solvable_problems, current_implementation_abilit
 
 
 N, M = map(int, input().split(" "))
-problems = parse_problems(N)
+problems = []
+parse_problems(N, problems)
 problems.sort()
 current_idea_ability, current_implementation_ability = map(int, input().split(" "))
 solvable_problems = []
@@ -88,7 +86,7 @@ wrong_answer_count = 0
 paused_prematurely = False
 for _ in range(M):
     wrong_answer_count_sub = 0
-    solvable_problems = find_solvable_problem(
+    find_solvable_problem(
         problems, current_idea_ability, solvable_problems
     )
     if not solvable_problems:
