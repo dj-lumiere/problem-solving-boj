@@ -4,6 +4,8 @@
 
 
 def extract_primes_from_sieve(limit: int) -> list[int]:
+    if limit <= 0:
+        return []
     is_prime = [False, False] + [True for _ in range(2, limit + 1)]
     for i in range(2, int(limit**0.5) + 1):
         if not is_prime[i]:
@@ -37,9 +39,10 @@ def factorize(value: int) -> dict[int, int]:
 
 
 n, p = map(int, input().split(" "))
-a = extract_primes_from_sieve(1000)
+
+prime_list = extract_primes_from_sieve(1000)
 zero_period = []
-for i in a:
+for i in prime_list:
     fib = [0, 1]
     for j in range(10000):
         fib_sub = sum(fib[-2:]) % i
@@ -47,21 +50,23 @@ for i in a:
             zero_period.append(j + 2)
             break
         fib.append(fib_sub)
-factorization = [0] * len(a)
-for i, v in enumerate(a):
+
+fibonamial_factorization = [0] * len(prime_list)
+for i, v in enumerate(prime_list):
     next_v = v
     next_period = zero_period[i]
     while next_period <= n:
         if next_v == 8:
             next_period = 6
-        factorization[i] += n // next_period
+        fibonamial_factorization[i] += n // next_period
         next_v *= v
         next_period *= v
+
 for i in range(2, p + 1):
     i_factorization = factorize(i)
     result = 2**63
-    for j, v in enumerate(a):
+    for j, v in enumerate(prime_list):
         if v not in i_factorization:
             continue
-        result = min(result, factorization[j] // i_factorization[v])
+        result = min(result, fibonamial_factorization[j] // i_factorization[v])
     print(result)
