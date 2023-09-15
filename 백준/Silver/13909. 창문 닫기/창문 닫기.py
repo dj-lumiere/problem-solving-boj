@@ -1,4 +1,1 @@
-# 13909 창문 닫기
-
-n = int(input())
-print(int(n**0.5))
+print(int(int(input())**0.5))
