@@ -41,7 +41,7 @@ def find_kth_square_free_number(k, mobius):
 
 
 # Precompute the Möbius function values using the Sieve of Eratosthenes
-n = int((2*10**9)**.5) + 1  # Approximately equal to the square root of 10^9
+n = int((2*10**9)**.5) + 1
 mobius_list = sieve_mobius(n)
 
 # Read the input
