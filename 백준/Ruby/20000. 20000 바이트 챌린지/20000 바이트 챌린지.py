@@ -7,14 +7,14 @@ def G(c,g,x,y,r):
 def B(x,y):return 0<=x<1025 and 0<=y<1025
 def M(s,e):
   a,b,c,d=*divmod(s-1,3),*divmod(e-1,3)
-  if s!=e and not(((a^c)|(b^d))&1):return(a+c)//2*3+(b+d)//2+1
+  if s-e and not(((a^c)|(b^d))&1):return(a+c)//2*3+(b+d)//2+1
 def E(a,j,m,n,s,l):
   if j==0:l+=["".join(map(str,s))];return
   for b in range(1,n+1):
     x=M(a,b)
     if b not in s and(j==m or not x or x in s):s+=[b];E(b,j-1,m,n,s,l);s.pop()
 def P(a,n,m):l,s=[],[];E(1,m,m,n,s,l);a+=l
-d,i=[chr(ord("A")+i)for i in range(26)]+[chr(ord("a")+i)for i in range(26)]+[chr(ord("0")+i)for i in range(10)]+["+","/"],int(input());f={v:i for i,v in enumerate(d)}
+d,i=list(map(chr,range(65,91)))+list(map(chr,range(97,123)))+list(map(chr,range(48,58)))+["+","/"],int(input());f={v:i for i,v in enumerate(d)}
 if i==0:print("BOJ 20000")
 if i==1:print(*['#include <cstdio>\nint main(){\n    int N;\n    scanf("%d",&N);']+[f'    {"else "if i-1 else""}if(N=={i}){{\n        puts("{i*4}");\n    }}'for i in range(1, 20001)]+['    else{\n        puts("Still working on it...");\n    }\n    return 0;\n}'],sep="\n")
 if i==2:
@@ -25,11 +25,11 @@ if i==3:
   a="QbccWQx8WorvKRjiG+Qq41GFbA4M72UxtzueKz11iKpRiddvEXnjm4u9VfHKdfZl9mmfjrlNBBEAAAAAAAAAAHpfA6Vyzyu18GET3vZx3UNDJmNNhaS56lutf//RKYyB7CBKHZLezb0mguYhI65KFoyHytHtwpZPKIy6WdBaw13TclYVfN/lq2L/byJDm99y//////////+0S7HSpdYpg04VcG2uKMqX4mR4Xa5h1iSzQOuqhKze3rWGAEFp/R4gwRV4OPa7JP3XSrCaCZXQNLo1pm5eIWVtbnfCVulfJ8gvkHaWs/eDR+L331ybWsFbYhLzgk8+a/DR9w54RXu8AQ";b,c=[[0]*2**(i+1)for i in range(10)]+[[]],[[" "]*(1025+i)for i in range(1024)]
   for l in a:b[-1]+=[1&(f[l]>>(5-i))for i in range(6)]
   for i in range(9,-1,-1):
-    for j in range(2**(i+1)):b[i][j]=b[i+1][2*j]|b[i+1][2*j+1]
+    for j in range(2<<i):b[i][j]=b[i+1][2*j]|b[i+1][2*j+1]
   for i in range(11):
-    for j in range(2**(i+1)):
+    for j in range(2<<i):
       if b[i][j]==0:continue
-      x,y,z = 1024*(2*(j//2)+1)//(2**i)-1,1024-(2**(10-i)),"/"
+      x,y,z=1024*(2*(j//2)+1)//(2**i)-1,1024-(2**(10-i)),"/"
       if j&1:x,z=x+1,"\\"
       for _ in range(max(2**(9-i),1)):
         c[y][x]=z;x,y=x+(1 if j&1 else -1),y+1
@@ -50,7 +50,7 @@ if i==7:
   a,b,c,e,g,s="Lf2ZCB/rneihIJ0SqXHjOz+tM0coaSlG3cESBtpG41XOVXdj+pFiJHwwofMHL08ptq2A/ksrEnQ6hBQO6U7RooeoQmX5CLGUVvK/ZyyKYa8aVpoDvUrjgM+gkjX7XbO7jjVWREP+yG2aAox7eqw8pLe306VkGsDt8Vbb5AwPuU9VA9gJUmbyjOsj8e1HKDpnwXWHFsuVNC86KoGH0wyZHB/fQjGkVcCLWJHGHCOn9yqaTS9AbxGbaehxmiVER/1y5NU5I5YM+Za4NwORrIJmtipkIwjpU/jZDHtLYpb/VVOkqaIPsTdeoVHWdmoqXPLOuVoHGxBEuG1h/nF4wh8fsuvtZN0VRcatXHf+BPF2i0yNA2wbBT8vNyDBzkbWxDE2fA6B1J3ibqU9N4ILT2CR489bvyqeQa8tSJY1MQ1GP4lmWn3tfreu5GvCIVbLPiotoGAFKLFVwsvgU0fFXPFKLTq/+MBAnSebeADiYBDw+AnvmETxztAFpVSKLNTHQJSKTXKkDeChkQH3ORpJCn2fgn0AJJ6MMRoki0FL4BgvQkHAoDuFd0T3TiNmmrmiqVNl2fTsqV0rHTVoTNiI65wpCE4gCAYI2zDG0TPy/LUfrmU4QFrPwL5EMnsT13YpInGd33Mx9hN9qI7N9ioT/FTDSBQveNljczBS1iBy0tCqE/tqsUohh+prmuQU+UrYVq/yakrhgtusR08SZo/1zmDOMKynZDHM6ltsZmGmu4gW7J4NIZP13KhNeHSkr5XYPiX3vMRtxZ1FPJ7Z5WCZkDgIVkZpwhTNIvSyXuEy53Gb4TvoprfYBSZYkV8Ao5iB4er8ck5XjIcHwLRiK743I51naAcYUo2cBmTlom2G6Ap6qmMHZPh5Jaxgogt5GYnsTwv1SRn6wXvwqpg6ixuHzwlZ6b0PGaDtYeArRom5Z6hrKnB+r7v1uYFKFmWrcEtM5gFgsc0esez2Z2/lzKxSnNCggh4UwJJnqLH/L0i0KZSFsRn0LLPcQIrGtGbKXw3GYP+AxpZ01ivwyFl2yJhVon5n8HP45TN6tAq2tEM+mr5k0BeSUMRA0bcoTcMLGH9yBKuOP5tm0oq9lX/akr1Fe2Y+0GGEAOSY4VJqZOsuBDPHAEKCEwH47HIBQFpcVm5kjIGxPJrUKC7h+e6Z7qZpxFFbtAgeU3TOibFD7WtjcjKXX7GArhBwRN0HfFeNI1pu/So8sZAH9k7ea7l8isSzI2eVtsjg8gl0lbup7UfPhLtn0EvFs1CVZuw3LD18K6t8geNzRTEToQIJOpdlF4/PmdpstmTY632yfcl3yFNry8g6KHA8bjSWMXFs0QzEgU+BuECQXTdA/TtlYwKm914RIVht3if2sSM1saRL62joiUcC0LtC+3w///QXj4lTh8kjWCSeleIWFJ4oTLeQYJEEUl68RdxvoQ7d0sXWq4+0A0km/6S/i81tsWmS/7e5IOanjzW00643lGnGamxihvC+eOVHTxEMJovNEZYF5+i+aEOZIHitX9viJ9k+TmOuBtzE1lwaY33QxTiP5WkaiJNxhx0JDrSNTdU3B91vhQOVQ9kdqeW6lvztRUY5M4oxesEdse87iyaI2Qu3uF3rHGkwA0jlmhOKGywy5vzBEqarGRBmd9Yij7BIHZeN5xNNo5LIhFPYEAJgyS7Q/ANux88ymWfPB1B6WnFnr7czlh+4Ar8g/kSnNvBgdzAOP7PAUX4NGs5PpZqEWE3DFuBZm/mL4avNPrF80IXzgXHyd0quYbp2p3ghBAM9sbCTCgae/kTMsLnVUgoPUT96LHfPBJ/jh51HAC0Y17JIor8Oe1LMFj7/kH6RK/YXgT0YhDK14Rm65TZAI4oCipWGo2+U5UQVojNPERKYjnzeH8sgkEGIGFIlyvpteWA6epuj7FYFH7Td38zoJjc6E9bfWkFJh9ffRhWVjqFOTeQHOXW8wnz2OeE9oEHOdfKUooMuhC2j/xPFGYz47f4Z6qadE3N2ItunyIatGH74avD8oCoLuusr7TJipP/Ab3wZaMMD++uLXH2INLVbDLBdU7Fkk/NK/J+pU/qvynwWc8TNMxeE4kSgDBXR94u3ihOMwIP0r4B10LjEj6YBfgpBFo9RFAj7WVxjTOxnbzEprWubZfEd1VjWyfdb7ovTSZocC2SojJ3/nRKXqApIThn1zSs6AtmBUpB97CvotbWpBj9rfd+BHSLxWn/w+pnKl79JUAMkGCP0/KKDL3aBtvXfuEVjbxqv5N84//AYx17esBp3s4uZrxOj+wX8auGJ4GnInqyLSKMSPioA49Lem2liJ1WTkh7hBjepB8FV5Ip8oe/n9gSMt4raIHOGpnHZvZD3LRXHusKnpazqQw7LGQHGZN0nhqvZAjMSnVzbYSN5a1a9TiPKvjz8c2RwmdW+VuGMi5WgbtQdSH5io0+EubyoxZj3rhVN6pnesQO++OunQWUPEW3OOJgTWWRVrlNSgbACbRhMbfXDWUZ3ggxiehKeocLIETcStkgeIH1zVxFfm/hqZN7LsIOLuOV7XvFp9/CjYqNzVGyXiJpaU1r1XDPKDdGKH8j3Is048mLugjglbIEOxr7A7Jx//mv6E3qxEFWtKHbyU3X2qU0vm9HjRRPp0m/kRmVwn/Y31LzlIXU9PD2OWRfgSCouyIpv+P+cBxm0WFKdOU5b7qbi7F3VcTyHveFVphaxK/OiHRvPW0YWizShGmsunappQlj+heTTef3CvyFb5RvUW0LN+zupdO5fswI7QStQ8kvK0MDyzZaeUlhtuTzGuyP1P7RCmdiuOBSsk5mBgfMXzzPw9wr7j5YPWbM2WEhatXPiGkwJKUQ+McMCnVN0+cZBH763AX3alKok9QguDP++bd6LbMLgGdZCJut+tJHSW8L+bmsBqH1lpjGp3KCAXYiCByJo/iI6jtjCyRnw/C6e6JCghmdfGKI9he3WPSN3er+gEpohutb6aFqI9gm2qaFCoMmNKjIm39IgdkJs/XZDUrEGq6dy8QrZIoc7/z+zcFhMnmmqBcEEWT3iM2HtV4eVQQBljRZ4LZ9E6JufiVsFSUq2jZuk/LxmXU196b2g37uKrkQnS65xpRaOqcLvL6QjPEckLZuqkX5jgrDmSwHpjZYFgPwp1gebk+9b/D0jjmAw5niq5EJWZDlmD8U3svi2ew3cAa8fTp0tI2uds/mdjY78tcMg7HR1sARA9rUKkw0Zy3XPpe+OEnZEDSvqkknj+XD9CI0hL2cdbk8luVxUg/jEkf6UXQ1z0mEb6zbjyeQ/bNMcEtHzxSR8kvaEp+NBwHMzTedOp6wd5Rxle0UkZCz5cxWdOd8xiwsoble5Ii1iWu/3/HgNa26XTSn9ERPn9Y4iWf/nqVdjxtDjMiy14rwaynid5xGdiXRR1e8WDHIda3eZae7XA24RdYCuDKRonnJj9GdRZaGerlNKY2ZVbNzbx8OoKp+wjDc87IPB3Gj7Lkva5tm8I+XYCNgOQ9RCjEJggxfMyffv5v+YAdFmNjFKg4ALO7Y1uIJldkiREVF0Ydkm1QGLYhublsMRAwIIzwaZWal/cMQGGErxzc/AaeuoculfnP4sHpm16qqCYYklTQs7l1FRt5fdt/ud8bR62jlSB7VFxfB3ssWpIutjQ",[],[["."]*1025 for _ in range(1025)],-4,[(0,1),(0,-1),(1,0),(-1,0),(1,1),(1,-1),(-1,1),(-1,-1)],[(4,4)]
   for l in a:b+=[1&(f[l]>>(5-i))for i in range(6)]
   for i in range(9,2,-1):
-    for n,o in product(range(1,2**(10-i)),repeat=2):
+    for n,o in product(range(1,1024>>i),repeat=2):
       x,y,l,e=n<<i,o<<i,2**i-3,e+4
       if not n&o&1:e-=4;continue
       t=[(x+l-1,y,1),(x,y+1-l,2),(x+1-l,y,1),(x,y+1-l,3),(x+1-l,y,0),(x,y+l-1,3),(x+l-1,y,0),(x,y+l-1,2)]
