@@ -69,16 +69,13 @@ def polynomial_multiplication(a, b):
         a_padded2[i] %= MOD2
     ntt(a_padded1, True, MOD1, ROOT1)
     ntt(a_padded2, True, MOD2, ROOT2)
-    result = [
-        (v1 * MOD2 * MOD2_MULINV + v2 * MOD1 * MOD1_MULINV) % (MOD1 * MOD2)
-        for i, (v1, v2) in enumerate(zip(a_padded1, a_padded2))
-        if i < original_size
-    ]
+    result = 0
+    for i, (v1, v2) in enumerate(zip(a_padded1, a_padded2)):
+        result ^= (v1 * MOD2 * MOD2_MULINV + v2 * MOD1 * MOD1_MULINV) % (MOD1 * MOD2)
     return result
 
 
 _, _ = map(int, input().split(" "))
 a = list(map(int, input().split(" ")))
 b = list(map(int, input().split(" ")))
-result = reduce(lambda x, y: x ^ y, polynomial_multiplication(a, b))
-print(result)
+print(polynomial_multiplication(a, b))
