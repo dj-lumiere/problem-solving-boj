@@ -1,5 +1,4 @@
 # 14860 GCD 곱
-# BOJ 테스트용 템플릿
 
 from sys import stdin, stdout
 
@@ -11,18 +10,15 @@ print = stdout.write
 def find_prime(a: int) -> list[int]:
     if a == 1:
         return []
-    else:
-        finder_limit = a
-        prime_list: list[bool] = [True for i in range(0, finder_limit + 1)]
-        prime_list[0] = False
-        prime_list[1] = False
-        for x in range(1, int(finder_limit**0.5) + 1):
-            if prime_list[x]:
-                prime_list[x : finder_limit + 1 : x] = [False] * (finder_limit // x)
-                prime_list[x] = True
-            else:
-                continue
-        return [i for i, v in enumerate(prime_list) if v]
+    finder_limit = a
+    prime_list: list[bool] = [True for i in range(0, finder_limit + 1)]
+    prime_list[0] = False
+    prime_list[1] = False
+    for x in range(1, int(finder_limit**0.5) + 1):
+        if prime_list[x]:
+            prime_list[x : finder_limit + 1 : x] = [False] * (finder_limit // x)
+            prime_list[x] = True
+    return [i for i, v in enumerate(prime_list) if v]
 
 
 N, M = map(int, input().split(" "))
