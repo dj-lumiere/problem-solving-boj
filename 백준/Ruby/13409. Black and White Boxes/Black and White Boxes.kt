@@ -40,9 +40,11 @@ fun findBoxNumber(boxConfiguration: String): Long {
         return result
     }
     result = multiplier * firstColorChange
-    boxList = ArrayList(boxList.subList(firstColorChange, boxList.size))
     for (i in boxList.indices) {
-        result += boxList[i] * (multiplier shr i)
+        if (i < firstColorChange) {
+            continue
+        }
+        result += boxList[i] * (multiplier shr (i - firstColorChange))
     }
     return sign * result
 }
@@ -63,10 +65,9 @@ fun registerCombination(
         totalValue += numbers[offset + i][0]
         totalBoxCount += numbers[offset + i][1]
     }
-    if (!sumsMap.containsKey(totalValue)){
+    if (!sumsMap.containsKey(totalValue)) {
         sumsMap[totalValue] = totalBoxCount
-    }
-    else{
+    } else {
         sumsMap[totalValue] = max(sumsMap[totalValue]!!, totalBoxCount)
     }
 }
