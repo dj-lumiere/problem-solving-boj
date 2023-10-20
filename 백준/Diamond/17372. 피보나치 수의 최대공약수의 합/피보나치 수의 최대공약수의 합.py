@@ -85,4 +85,4 @@ for i, v in enumerate(n_over_d_possible_values):
     n_over_d_fib_sum.append(
         fib_sum(n_over_d_possible_values[i - 1] + 1, n_over_d_possible_values[i])
     )
-print(sum(i * j for i, j in zip(n_over_d_as_gcd_count, n_over_d_fib_sum)) % MOD)
+print(sum(i * j % MOD for i, j in zip(n_over_d_as_gcd_count, n_over_d_fib_sum)) % MOD)
