@@ -1,6 +1,4 @@
 # 30390 우주왕자 사교파티
-# GCD(A, B)가 답
-
 
 A, B, K = map(int, input().split(" "))
 divisors = []
