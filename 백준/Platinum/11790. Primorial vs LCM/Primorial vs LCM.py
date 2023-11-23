@@ -2,7 +2,6 @@
 
 from bisect import bisect_right
 from sys import stdin
-from decimal import Decimal
 
 
 def input():
@@ -30,13 +29,9 @@ for i in range(1, T + 1):
     j = 2
     answer = 1
     while True:
-        # index = bisect_right(prime_list, Decimal(N) ** (Decimal(1) / Decimal(j)))
         index = bisect_right(prime_list, round(N ** (1 / j), 10))
         if index == 0:
             break
-        # if index != len(prime_list) and int(N ** (1 / j)) == prime_list[index]:
-        #     index += 1
-        # print(j, index, N ** (1 / j), prime_list_multiply[index])
         answer *= prime_list_multiply[index]
         answer %= MOD
         j += 1
