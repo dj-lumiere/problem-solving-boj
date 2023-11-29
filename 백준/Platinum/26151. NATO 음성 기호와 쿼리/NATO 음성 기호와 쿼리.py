@@ -49,12 +49,22 @@ Q = int(Q)
 step = 0
 threshold_level = THRESHOLD + 1
 # print(threshold_level)
-INF = 2*10**18
+INF = 2 * 10**18
 precalculation = [[0] * (len(S) + 1) for _ in range(threshold_level)]
 for i in range(threshold_level):
     for j, letter in enumerate(S, start=1):
         letter_order = ord(letter) - ord("A")
         precalculation[i][j] = min(precalculation[i][j - 1] + x[i][letter_order], INF)
+precalculation_nato = [
+    [[0] * (len(NATO[i]) + 1) for i in range(26)] for _ in range(threshold_level)
+]
+for i in range(threshold_level):
+    for a in range(26):
+        for j, letter in enumerate(NATO[a], start=1):
+            letter_order = ord(letter) - ord("A")
+            precalculation_nato[i][a][j] = min(
+                precalculation_nato[i][a][j - 1] + x[i][letter_order], INF
+            )
 # print(*precalculation, sep="\n")
 answer = ""
 for _ in range(Q):
@@ -65,13 +75,13 @@ for _ in range(Q):
     if operator == 2:
         stack = []
         operand -= 1
-        if step >= threshold_level-1:
-            stack.append((operand, ord(S[0]) - ord("A"), threshold_level-1))
+        if step >= threshold_level - 1:
+            stack.append((operand, ord(S[0]) - ord("A"), threshold_level - 1))
         else:
             stack.append((operand, -1, step))
         while stack:
             length, last_letter, stage = stack.pop()
-            #print(length, last_letter, stage)
+            # print(length, last_letter, stage)
             if stage == -1:
                 print(chr(ord("A") + last_letter), end="")
                 continue
@@ -79,13 +89,10 @@ for _ in range(Q):
             if last_letter == -1:
                 letter_length = precalculation[stage]
             else:
-                for letter in NATO[last_letter]:
-                    letter_length.append(
-                        letter_length[-1] + x[stage][ord(letter) - ord("A")]
-                    )
-            #print(letter_length)
+                letter_length = precalculation_nato[stage][last_letter]
+            # print(letter_length)
             index = bisect_right(letter_length, length)
-            #print(index)
+            # print(index)
             current_letter = 0
             if last_letter == -1:
                 current_letter = ord(S[index - 1]) - ord("A")
