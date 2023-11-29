@@ -49,11 +49,12 @@ Q = int(Q)
 step = 0
 threshold_level = THRESHOLD + 1
 # print(threshold_level)
+INF = 2*10**18
 precalculation = [[0] * (len(S) + 1) for _ in range(threshold_level)]
 for i in range(threshold_level):
     for j, letter in enumerate(S, start=1):
         letter_order = ord(letter) - ord("A")
-        precalculation[i][j] = precalculation[i][j - 1] + x[i][letter_order]
+        precalculation[i][j] = min(precalculation[i][j - 1] + x[i][letter_order], INF)
 # print(*precalculation, sep="\n")
 answer = ""
 for _ in range(Q):
