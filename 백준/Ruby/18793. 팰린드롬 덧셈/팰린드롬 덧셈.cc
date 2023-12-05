@@ -5,6 +5,9 @@
 #include <cstdint>
 #include <cassert>
 #include <algorithm>
+#pragma GCC optimize("O3")
+#pragma GCC optimize("Ofast")
+#pragma GCC optimize("unroll-loops")
 using namespace std;
 
 void fastIO()
@@ -1889,7 +1892,7 @@ int32_t main()
         int32_t algorithm_type = determine_algorithm_type(l, number_type, K);
         // cout << algorithm_type << "\n";
         execute_algorithm(algorithm_type, B, l, K, p1, p2, p3);
-        vector<int32_t> result = big_three_sum(p1, p2, p3, B);
+        // vector<int32_t> result = big_three_sum(p1, p2, p3, B);
         cout << p1 << " " << p2 << " " << p3 << "\n";
         //  if (result != K)
         //  {
