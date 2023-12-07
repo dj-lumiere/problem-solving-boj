@@ -1,18 +1,22 @@
 # 16975 수열과 쿼리 21
 
 from sys import stdin
+from math import log2, ceil
 
 
-class LazySegmentTree:
-    def __init__(self, size=0, initial_value=None, identity_value=None):
-        self.size = size
-        self.initial_value = initial_value
-        self.identity_value = identity_value
-        self.log_size = self.calculate_log2(size)
+class SegmentTree:
+    def __init__(self, member: list[int], default=0, identity=0, index_start=0):
+        self.size = len(member)
+        self.default = default
+        self.identity = identity
+        self.log_size = ceil(log2(self.size))
         self.tree_capacity = 1 << self.log_size
-        self.tree = [self.initial_value] * (2 * self.tree_capacity)
-        self.lazy = [self.identity_value] * (2 * self.tree_capacity)
+        self.index_start = index_start
+        self.tree = [self.default] * (2 * self.tree_capacity)
+        self.lazy = [self.identity] * (2 * self.tree_capacity)
         self.lazy_multiplier = [0] * (2 * self.tree_capacity)
+        self.index_offset = self.tree_capacity - self.index_start
+        self.build_tree(member)
 
     def __str__(self, level: int = 0, pos: int = 1) -> str:
         indent: str = "    " * level
@@ -33,33 +37,15 @@ class LazySegmentTree:
         else:
             return f"{self.tree[pos]} ({self.lazy[pos]})\n{left_string}\n{right_string}"
 
-    @staticmethod
-    def calculate_log2(n):
-        log_value = 0
-        while n > (1 << log_value):
-            log_value += 1
-        return log_value
-
-    def merge_nodes(self, left, right):
-        return left + right
-
-    def update_node(self, lazy_value, node_value, lazy_multiplier):
-        return node_value + lazy_value * lazy_multiplier
-
-    def compose_lazies(self, lazy_value1, lazy_value2):
-        return lazy_value1 + lazy_value2
-
-    def set_node_value(self, index, value):
-        index = (index - 1) + self.tree_capacity
-        self.tree[index] = value
-        self.lazy_multiplier[index] = 1
-
-    def initialize(self):
+    def build_tree(self, member: list[int]):
+        for i, v in enumerate(member, start=self.tree_capacity):
+            self.tree[i] = v
+            self.lazy_multiplier[i] = 1
         for i in range(self.tree_capacity - 1, 0, -1):
             self.pull(i)
 
     def point_update(self, index, value):
-        index = (index - 1) + self.tree_capacity
+        index += self.index_offset
         for level in range(self.log_size, 0, -1):
             self.push(index >> level)
         self.apply_update(index, value)
@@ -67,8 +53,8 @@ class LazySegmentTree:
             self.pull(index >> level)
 
     def range_update(self, left, right, value):
-        left = (left - 1) + self.tree_capacity
-        right = (right - 1) + self.tree_capacity
+        left += self.index_offset
+        right += self.index_offset
         for level in range(self.log_size, 0, -1):
             if ((left >> level) << level) != left:
                 self.push(left >> level)
@@ -90,17 +76,17 @@ class LazySegmentTree:
             if (((right + 1) >> level) << level) != right + 1:
                 self.pull(right >> level)
 
-    def query_point(self, index):
-        index = (index - 1) + self.tree_capacity
+    def point_query(self, index):
+        index += self.index_offset
         for level in range(self.log_size, 0, -1):
             self.push(index >> level)
         return self.tree[index]
 
-    def query_range(self, left, right):
-        left_result = self.initial_value
-        right_result = self.initial_value
-        left = (left - 1) + self.tree_capacity
-        right = (right - 1) + self.tree_capacity
+    def range_query(self, left, right):
+        left_result = self.default
+        right_result = self.default
+        left += self.index_offset
+        right += self.index_offset
         for level in range(self.log_size, 0, -1):
             if ((left >> level) << level) != left:
                 self.push(left >> level)
@@ -127,7 +113,7 @@ class LazySegmentTree:
     def push(self, index):
         self.apply_update(2 * index, self.lazy[index])
         self.apply_update(2 * index + 1, self.lazy[index])
-        self.lazy[index] = self.identity_value
+        self.lazy[index] = self.identity
 
     def pull(self, index):
         self.tree[index] = self.merge_nodes(
@@ -137,6 +123,18 @@ class LazySegmentTree:
             self.lazy_multiplier[2 * index] + self.lazy_multiplier[2 * index + 1]
         )
 
+    def merge_nodes(self, left, right):
+        # Change this part for various operations
+        return left + right
+
+    def update_node(self, lazy_value, node_value, lazy_multiplier):
+        # Change this part for various operations
+        return node_value + lazy_value * lazy_multiplier
+
+    def compose_lazies(self, lazy_value1, lazy_value2):
+        # Change this part for various operations
+        return lazy_value1 + lazy_value2
+
 
 def input():
     return stdin.readline().strip()
@@ -145,14 +143,7 @@ def input():
 N = int(input())
 numbers = list(map(int, input().split(" ")))
 M = int(input())
-segment_tree = LazySegmentTree(size=N, initial_value=0, identity_value=0)
-
-# Set the initial values
-for i in range(1, N + 1):
-    val = numbers[i - 1]
-    segment_tree.set_node_value(i, val)
-
-segment_tree.initialize()
+my_segment_tree = SegmentTree(member=numbers, default=0, identity=0, index_start=1)
 
 # Process the operations
 for _ in range(M):
@@ -161,9 +152,9 @@ for _ in range(M):
     # Update operation
     if opcode == 1:
         start, end, value = operand
-        segment_tree.range_update(start, end, value)
+        my_segment_tree.range_update(start, end, value)
 
     # Query operation
     if opcode == 2:
         point = operand[0]
-        print(segment_tree.query_point(point))
+        print(my_segment_tree.point_query(point))
