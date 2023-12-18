@@ -1,6 +1,5 @@
 # 30958 서울사이버대학을 다니고
 
-from re import split
 from collections import Counter
 from string import ascii_lowercase
 
