@@ -34,7 +34,7 @@ def bbp_formula(n: int):
 def get_nth_hex_digit_of_pi(n: int):
     pi = bbp_formula(n - 1)
     nth_digit = int((pi - floor(pi)) * 16)
-    return format(nth_digit, "X")
+    return f"{nth_digit:X}"
 
 
 n = int(input())
