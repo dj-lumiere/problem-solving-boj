@@ -11,15 +11,25 @@ T: int = 0
 dx_dy_list: list[tuple] = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
 
-def dfs(pos_x, pos_y):
-    if 0 <= pos_x < x_size and 0 <= pos_y < y_size and graph[pos_y][pos_x] != 0:
-        graph[pos_y][pos_x] = 0
-        dfs(pos_x - 1, pos_y)
-        dfs(pos_x + 1, pos_y)
-        dfs(pos_x, pos_y - 1)
-        dfs(pos_x, pos_y + 1)
-        return 1
-    return 0
+def is_inbound(pos_x, x_size, pos_y, y_size):
+    return 0 <= pos_x < x_size and 0 <= pos_y < y_size
+
+
+def dfs(start_x, start_y):
+    stack = [(start_x, start_y)]
+    count = 0
+
+    while stack:
+        pos_x, pos_y = stack.pop()
+        if is_inbound(pos_x, x_size, pos_y, y_size) and graph[pos_y][pos_x] != 0:
+            graph[pos_y][pos_x] = 0
+            count += 1
+            stack.append((pos_x - 1, pos_y))
+            stack.append((pos_x + 1, pos_y))
+            stack.append((pos_x, pos_y - 1))
+            stack.append((pos_x, pos_y + 1))
+
+    return 1 if count > 0 else 0
 
 
 # 얼음 녹이기
