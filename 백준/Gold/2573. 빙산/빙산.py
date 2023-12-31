@@ -1,7 +1,8 @@
-from collections import deque
-from sys import stdin, setrecursionlimit
+# 2573 빙산
 
-setrecursionlimit(90000)
+from collections import deque
+from sys import stdin
+
 y_size, x_size = list(map(int, input().split(" ")))
 graph: list[list[int]] = [
     list(map(int, stdin.readline().rstrip().split(" "))) for y in range(y_size)
