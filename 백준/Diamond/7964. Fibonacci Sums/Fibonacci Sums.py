@@ -2,8 +2,13 @@
 from itertools import zip_longest
 from sys import stdin
 
-N1, *A1 = list(map(int, stdin.readline().strip().split(" ")))
-N2, *A2 = list(map(int, stdin.readline().strip().split(" ")))
+
+def input():
+    return stdin.readline().strip()
+
+
+N1, *A1 = list(map(int, input().split(" ")))
+N2, *A2 = list(map(int, input().split(" ")))
 
 N = max(N1, N2) + 3
 result = [i + j for (i, j) in zip_longest(A1, A2, fillvalue=0)] + [0, 0, 0]
@@ -42,7 +47,10 @@ for i in range(len(result) - 3, -1, -1):
     if result[i : i + 3] == [1, 1, 0]:
         result[i : i + 3] = [0, 0, 1]
 
-while len(result) > 1 and result[-1] == 0:
+while result and result[-1] == 0:
     result.pop()
+
+if not result:
+    result.append(0)
 
 print(len(result), *result)
