@@ -1,81 +1,77 @@
-# 22289 큰 수 곱셈 (3)
+# 11385 씽크스몰
+# from "CPython에서 내장 합성곱 함수 사용하기", https://blog.kiwiyou.dev/posts/python-fft/
 
-from math import ceil, log2
+import array
+import _io
+import _decimal
 from functools import reduce
 
 
-def ntt(a, invert: bool, MOD, ROOT):
-    N = len(a)
-    bit_reverse_permutation(a, N)
-    m = 1
-    step = MOD - 1
-    for _ in range(1, int(log2(N)) + 1):
-        m <<= 1
-        step >>= 1
-        angle = pow(ROOT, step, MOD)
-        if invert:
-            angle = pow(angle, -1, MOD)
-        for k in range(0, N, m):
-            w = 1
-            for j in range(k, k + (m >> 1)):
-                t = w * a[j + (m >> 1)] % MOD
-                u = a[j]
-                a[j] = u + t
-                a[j + (m >> 1)] = u - t
-                w = w * angle % MOD
-                if a[j] >= MOD:
-                    a[j] -= MOD
-                if a[j + (m >> 1)] < 0:
-                    a[j + (m >> 1)] += MOD
-    if invert:
-        inv_N = pow(N, -1, MOD)
-        for i, v in enumerate(a):
-            a[i] = v * inv_N % MOD
+class Unsafe:
+    __slots__ = ("p", "nogc")
+
+    def __init__(self):
+        self.nogc = []
+
+    def magic(self):
+        self.p = [0]
+        f = _io._RawIOBase()
+        f.readable = lambda: True
+        f.readinto = lambda x: not self.p.__setitem__(0, x)
+        r = _io.BufferedReader(f)
+        r.read(1)
+        del r
+        ptr = self.p[0].cast("P")
+        obj = [0] * len(ptr)
+        self.nogc.append(obj)
+        return ptr, obj
+
+    def view(self, addr, n):
+        ptr, obj = self.magic()
+        data = array.array("Q", [9, id(bytearray), n, n, addr, addr, 0]).tobytes()
+        self.nogc.append(data)
+        ptr[0] = id(data) + 32
+        return obj[0]
 
 
-def bit_reverse_permutation(a, N):
-    j = 0
-    for i in range(1, N):
-        bit = N >> 1
-        while not ((j := j ^ bit) & bit):
-            bit >>= 1
-        if i < j:
-            a[i], a[j] = a[j], a[i]
+class FFT:
+    __slots__ = ("unsafe", "a_repr", "b_repr", "a", "b")
+    _decimal.getcontext().prec = 1 << 30
+    _decimal.getcontext().Emax = 1 << 30
+
+    def __init__(self):
+        self.unsafe = Unsafe()
+        self.a_repr = array.array("Q", [9, id(_decimal.Decimal), 0, 0, 0, 0, 0, 0, 0])
+        self.b_repr = array.array("Q", self.a_repr)
+        self.unsafe.nogc.append(self.a_repr)
+        self.unsafe.nogc.append(self.b_repr)
+        a_addr = int.from_bytes(self.unsafe.view(id(self.a_repr) + 24, 8), "little")
+        b_addr = int.from_bytes(self.unsafe.view(id(self.b_repr) + 24, 8), "little")
+        ptr, a_obj = self.unsafe.magic()
+        ptr[0] = a_addr
+        ptr, b_obj = self.unsafe.magic()
+        ptr[0] = b_addr
+        self.a = a_obj[0]
+        self.b = b_obj[0]
+
+    def conv(self, a: array.array, b: array.array) -> memoryview:
+        a_buf = int.from_bytes(self.unsafe.view(id(a) + 24, 8), "little")
+        self.a_repr[6] = len(a)
+        self.a_repr[8] = a_buf
+        b_buf = int.from_bytes(self.unsafe.view(id(b) + 24, 8), "little")
+        self.b_repr[6] = len(b)
+        self.b_repr[8] = b_buf
+        c = self.a * self.b
+        c_repr = self.unsafe.view(id(c) + 48, 24)
+        c_len = int.from_bytes(c_repr[:8], "little")
+        c_buf = int.from_bytes(c_repr[-8:], "little")
+        self.unsafe.nogc.append(c)
+        return memoryview(self.unsafe.view(c_buf, c_len * 8)).cast("Q")
 
 
-def polynomial_multiplication(a, b):
-    MOD1 = 2013265921
-    ROOT1 = 31
-    MOD2 = 2113929217
-    ROOT2 = 5
-    MOD1_MULINV = 21
-    MOD2_MULINV = 2013265901
-    original_size = len(a) + len(b) - 1
-    degree = ceil(log2(original_size))
-    size = 1 << degree
-    a_padded1 = a + [0] * (size - len(a))
-    b_padded1 = b + [0] * (size - len(b))
-    a_padded2 = a + [0] * (size - len(a))
-    b_padded2 = b + [0] * (size - len(b))
-    ntt(a_padded1, False, MOD1, ROOT1)
-    ntt(b_padded1, False, MOD1, ROOT1)
-    ntt(a_padded2, False, MOD2, ROOT2)
-    ntt(b_padded2, False, MOD2, ROOT2)
-    for i, v in enumerate(b_padded1):
-        a_padded1[i] *= v
-        a_padded1[i] %= MOD1
-    for i, v in enumerate(b_padded2):
-        a_padded2[i] *= v
-        a_padded2[i] %= MOD2
-    ntt(a_padded1, True, MOD1, ROOT1)
-    ntt(a_padded2, True, MOD2, ROOT2)
-    result = 0
-    for i, (v1, v2) in enumerate(zip(a_padded1, a_padded2)):
-        result ^= (v1 * MOD2 * MOD2_MULINV + v2 * MOD1 * MOD1_MULINV) % (MOD1 * MOD2)
-    return result
-
-
-_, _ = map(int, input().split(" "))
-a = list(map(int, input().split(" ")))
-b = list(map(int, input().split(" ")))
-print(polynomial_multiplication(a, b))
+_, _ = map(int, input().split())
+x = FFT()
+a = array.array("Q", map(int, input().split()))
+b = array.array("Q", map(int, input().split()))
+result = x.conv(a, b)
+print(reduce(lambda x, y: x ^ y, result, 0))
