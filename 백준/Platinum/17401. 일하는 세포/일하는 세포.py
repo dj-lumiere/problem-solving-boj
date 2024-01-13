@@ -76,4 +76,4 @@ elif not calculation_batches and calculation_leftovers:
     result_matrix = connection_matrices[calculation_leftovers - 1]
 elif calculation_batches and not calculation_leftovers:
     result_matrix = matrix_exp(connection_matrices[-1], calculation_batches, MOD)
-print("\n".join([" ".join(map(str, [i for i in j])) for j in result_matrix]))
+print(" ".join([" ".join(map(str, [i for i in j])) for j in result_matrix]))
