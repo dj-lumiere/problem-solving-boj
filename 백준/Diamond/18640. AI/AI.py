@@ -9,6 +9,4 @@ if n != 3:
     x = decompress(b85decode(h))
     print(*x.decode(encoding="utf-8").split("\r\n"), sep="\n", end="")
 else:
-    print("""!
-"
-$""")
+    print("!\n%\n$")
