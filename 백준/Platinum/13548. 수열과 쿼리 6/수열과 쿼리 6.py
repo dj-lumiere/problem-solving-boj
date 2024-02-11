@@ -1,17 +1,15 @@
 # 13548 수열과 쿼리 6
-from collections import Counter
 from sys import stdin
-
-
-def input():
-    return stdin.readline().strip()
+from array import array
+import os
 
 
 def main():
-    N = int(input())
-    A = list(map(int, input().split()))
-    Q = int(input())
-    queries = [tuple(map(lambda x: x - 1, map(int, input().split()))) for _ in range(Q)]
+    tokens = iter(os.read(0, os.fstat(0).st_size).split())
+    N = int(next(tokens))
+    A = array("I", [int(next(tokens)) for _ in range(N)])
+    Q = int(next(tokens))
+    queries = [(int(next(tokens)) - 1, int(next(tokens)) - 1) for _ in range(Q)]
     query_order = {v: [] for v in queries}
     for i, (s, e) in enumerate(queries):
         query_order[(s, e)].append(i)
@@ -21,7 +19,7 @@ def main():
     frequency_counter = [0 for _ in range(N + 1)]
     frequency_counter[0] = N
     current_max_freq = 0
-    answer = [0 for _ in range(Q)]
+    answer = ["" for _ in range(Q)]
     last_query = [0, 0]
     for i, (s, e) in enumerate(queries):
         if i == 0:
@@ -32,7 +30,7 @@ def main():
                 if frequency_counter[current_max_freq + 1] == 1:
                     current_max_freq += 1
             for j in query_order[(s, e)]:
-                answer[j] = current_max_freq
+                answer[j] = str(current_max_freq)
             last_query = [s, e]
             continue
         s_before, e_before = last_query
@@ -65,9 +63,9 @@ def main():
                 if frequency_counter[current_max_freq + 1] == 1:
                     current_max_freq += 1
         for j in query_order[(s, e)]:
-            answer[j] = current_max_freq
+            answer[j] = str(current_max_freq)
         last_query = [s, e]
-    print(*answer, sep="\n")
+    os.write(1, "\n".join(answer).encode())
 
 
 main()
