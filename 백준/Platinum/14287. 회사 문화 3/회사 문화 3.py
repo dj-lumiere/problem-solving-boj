@@ -1,37 +1,25 @@
 # 14288 회사 문화 4
-
+import io
+import os
+from array import array
 from math import ceil, log2
-from sys import stdin, stdout
 
 
 class SegmentTree:
-    def __init__(self, members: list[int], default=0, identity=0, index_start=0):
+    def __init__(self, members, default=0, identity=0, index_start=0):
         self.size = len(members)
         self.default = default
         self.identity = identity
         self.log_size = ceil(log2(self.size))
         self.tree_capacity = 1 << self.log_size
         self.index_start = index_start
-        self.tree = [self.default] * (2 * self.tree_capacity)
-        self.lazy = [self.identity] * (2 * self.tree_capacity)
-        self.lazy_multiplier = [0] * (2 * self.tree_capacity)
+        self.tree = array('I', [self.default] * (2 * self.tree_capacity))
+        self.lazy = array('I', [self.identity] * (2 * self.tree_capacity))
+        self.lazy_multiplier = array('I', [0] * (2 * self.tree_capacity))
         self.index_offset = self.tree_capacity - self.index_start
         self.build_tree(members)
 
-    def __str__(self, level: int = 0, pos: int = 1) -> str:
-        indent: str = "    " * level
-        left_string: str = (
-            f"    {indent}L{level + 1}={self.__str__(level=level + 1, pos=2 * pos)}" if 2 * pos < len(self.tree) else "")
-        right_string: str = (
-            f"    {indent}R{level + 1}={self.__str__(level=level + 1, pos=2 * pos + 1)}" if 2 * pos + 1 < len(self.tree) else "")
-        if level == 0:
-            return f"root={self.tree[pos]} ({self.lazy[pos]})\n{left_string}\n{right_string}"
-        elif level == self.log_size:
-            return f"{self.tree[pos]} ({self.lazy[pos]})"
-        else:
-            return f"{self.tree[pos]} ({self.lazy[pos]})\n{left_string}\n{right_string}"
-
-    def build_tree(self, members: list[int]):
+    def build_tree(self, members):
         for i, v in enumerate(members, start=self.tree_capacity):
             self.tree[i] = v
             self.lazy_multiplier[i] = 1
@@ -123,9 +111,9 @@ class SegmentTree:
 
 def dfs(root, graph, size):
     time = 0
-    stack: list[tuple[int, bool]] = [(root, False)]
-    time_in = [0] * (size + 1)
-    time_out = [0] * (size + 1)
+    stack = [(root, False)]
+    time_in = array('I', [0 for _ in range(size + 1)])
+    time_out = array('I', [0 for _ in range(size + 1)])
     while stack:
         node, visited = stack.pop()
         if not visited:
@@ -140,18 +128,11 @@ def dfs(root, graph, size):
     return time_in, time_out
 
 
-def input():
-    return stdin.readline().strip()
-
-
-def print(target: str):
-    return stdout.write(target)
-
-
 TOWARD_BOSS = 1
 TOWARD_SUBORDINATE = 0
-N, M = map(int, input().split(" "))
-last_node = list(map(int, input().split(" ")))
+tokens = iter(os.read(0, os.fstat(0).st_size).split())
+N, M = int(next(tokens)), int(next(tokens))
+last_node = array('i', [int(next(tokens)) for _ in range(N)])
 graph = [[] for _ in range(N + 1)]
 for i, v in enumerate(last_node, start=1):
     if i == 1:
@@ -163,15 +144,15 @@ time_in, time_out = dfs(root=1, graph=graph, size=N)
 segment_tree = SegmentTree(members=[0] * N, default=0, identity=0, index_start=1)
 segment_tree2 = SegmentTree(members=[0] * N, default=0, identity=0, index_start=1)
 current_direction = TOWARD_BOSS
-answer = []
+answer = array('I')
 
 # Process the operations
 for _ in range(M):
-    opcode, *operand = list(map(int, input().split()))
+    opcode = int(next(tokens))
 
     # Update operation
     if opcode == 1:
-        starting_member, value = operand
+        starting_member, value = int(next(tokens)), int(next(tokens))
         start = time_in[starting_member]
         end = time_out[starting_member]
         if current_direction == TOWARD_SUBORDINATE:
@@ -181,7 +162,7 @@ for _ in range(M):
 
     # Query operation
     if opcode == 2:
-        starting_member = operand[0]
+        starting_member = int(next(tokens))
         start = time_in[starting_member]
         end = time_out[starting_member]
         result = segment_tree.point_query(start) + segment_tree2.range_query(start, end)
@@ -193,4 +174,4 @@ for _ in range(M):
         else:
             current_direction = TOWARD_SUBORDINATE
 
-print("\n".join(map(str, answer)))
+os.write(1, "\n".join(map(str, answer)).encode())
