@@ -9,7 +9,8 @@ def main():
     N = int(next(tokens))
     A = array("I", [int(next(tokens)) for _ in range(N)])
     A_order = {v: i for i, v in enumerate(sorted(set(A)))}
-    A = list(map(lambda x: A_order[x], A))
+    for i, v in enumerate(A):
+        A[i] = A_order[v]
     # print(A)
     Q = int(next(tokens))
     queries = [(int(next(tokens)) - 1, int(next(tokens)) - 1) for _ in range(Q)]
