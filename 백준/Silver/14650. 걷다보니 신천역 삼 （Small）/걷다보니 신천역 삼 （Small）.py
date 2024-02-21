@@ -1,4 +1,4 @@
-# 14651 걷다보니 신천역 삼 (Large)
+# 14650 걷다보니 신천역 삼 (Small)
 
 N = int(input())
 answer = [[0 for _ in range(3)] for _ in range(N)]
