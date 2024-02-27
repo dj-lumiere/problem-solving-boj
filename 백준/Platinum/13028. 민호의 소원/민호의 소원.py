@@ -12,11 +12,7 @@ def main():
     A_order = {v: i for i, v in enumerate(sorted(set(A)))}
     for i, v in enumerate(A):
         A[i] = A_order[v]
-    queries = [(int(next(tokens)) - 1, int(next(tokens)) - 1) for _ in range(Q)]
-    query_order = {v: [] for v in queries}
-    for i, (s, e) in enumerate(queries):
-        query_order[(s, e)].append(i)
-    queries = list(set(queries))
+    queries = [(int(next(tokens)) - 1, int(next(tokens)) - 1, i) for i in range(Q)]
     bucket_size = int(N ** 0.5) + 1
     queries.sort(key=lambda x: (x[0] // bucket_size, x[1]))
     current_counter = array("i", [0 for _ in range(N)])
@@ -24,13 +20,12 @@ def main():
     frequency_counter[0] = N
     answer = ["" for _ in range(Q)]
     last_query = [0, 0]
-    for i, (s, e) in enumerate(queries):
+    for i, (s, e, k) in enumerate(queries):
         if i == 0:
             for j in range(s, e + 1):
                 frequency_counter[current_counter[A[j]] + 1] += 1
                 current_counter[A[j]] += 1
-            for j in query_order[(s, e)]:
-                answer[j] = str(frequency_counter[3])
+            answer[k] = str(frequency_counter[3])
             last_query = [s, e]
             continue
         s_before, e_before = last_query
@@ -50,8 +45,7 @@ def main():
             for j in range(e_before + 1, e + 1):
                 frequency_counter[current_counter[A[j]] + 1] += 1
                 current_counter[A[j]] += 1
-        for j in query_order[(s, e)]:
-            answer[j] = str(frequency_counter[3])
+        answer[k] = str(frequency_counter[3])
         last_query = [s, e]
     os.write(1, "\n".join(answer).encode())
     os._exit(0)
