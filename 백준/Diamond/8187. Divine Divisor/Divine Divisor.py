@@ -24,7 +24,7 @@ def is_composite(n, power_of_two, remainder, base):
 
 
 def is_prime(n: int):
-    base_prime_list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
+    base_prime_list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37]
     if n in base_prime_list:
         return True
     if n == 1 or n % 2 == 0:
@@ -67,7 +67,7 @@ def find_single_prime_factor(n: int) -> int:
 def find_all_prime_factors(N: int) -> list[int]:
     temp_N = N
     factors = []
-    base_prime_list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
+    base_prime_list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37]
     for prime in base_prime_list:
         while temp_N % prime == 0:
             factors.append(prime)
@@ -82,7 +82,7 @@ def find_all_prime_factors(N: int) -> list[int]:
 def factorize_large_number(N: int) -> dict[int, int]:
     temp_N = N
     factors = []
-    base_prime_list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
+    base_prime_list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37]
     for prime in base_prime_list:
         while temp_N % prime == 0:
             factors.append(prime)
