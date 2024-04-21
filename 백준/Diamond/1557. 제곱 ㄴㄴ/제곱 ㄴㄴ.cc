@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <unordered_map>
 
-const int32_t MAX = 12'000'000;
+const int32_t MAX = 4'000;
 std::unordered_map<int32_t, int64_t> mobius_large;
 std::array<int32_t, MAX + 1> mobius_sum;
 
