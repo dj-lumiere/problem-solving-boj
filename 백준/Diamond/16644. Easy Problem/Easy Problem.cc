@@ -1,133 +1,102 @@
-// 16644 Easy Problem in C++
-
+#define ll long long
+#define MAX 15840000
 #include <iostream>
-#include <vector>
-#include <cmath>
-#include <cstdint>
 #include <unordered_map>
+#include <cmath>
 
-const int32_t MAX = 12'000'000;
-std::unordered_map<int32_t, int64_t> mobius_large;
-std::array<int32_t, MAX + 1> mobius_sum;
+std::unordered_map<int, int> large_mu;
+int mu[MAX + 1] = { 0, 1 };
 
-void precompute_mobius()
-{
-    mobius_sum[0] = 0;
-    mobius_sum[1] = 1;
-    for (int32_t i = 1; i <= MAX; ++i)
-    {
-        for (int32_t j = 2; i * j <= MAX; ++j)
-        {
-            mobius_sum[j * i] -= mobius_sum[i];
-        }
-        mobius_sum[i] += mobius_sum[i - 1];
-    }
+ll mertens(int n) {
+	if (n <= MAX) return mu[n];
+	if (large_mu.find(n) != large_mu.end()) {
+		return large_mu[n];
+	}
+	ll ans = 1;
+	int i, j;
+	for (i = 2; i <= n; i = j + 1) {
+		j = n / (n / i);
+		ans -= mertens(n / i) * (j - i + 1);
+	}
+	return large_mu[n] = ans;
 }
 
-int64_t mobius(int32_t x)
-{
-    int32_t i, j;
-    if (x <= MAX)
-    {
-        return mobius_sum[x];
-    }
-    if (mobius_large.contains(x))
-    {
-        return mobius_large[x];
-    }
-    int64_t result = 1;
-    for (i = 2; i <= x; i = j + 1)
-    {
-        j = x / (x / i);
-        result -= (j - i + 1) * mobius(x / i);
-    }
-    return mobius_large[x] = result;
+ll small_squareFree(ll n) {
+	ll d = sqrt(n);
+	ll ans = 0;
+	for (ll i = 1; i <= d; i++) {
+		ans += ((ll)mu[i] - (ll)mu[i - 1]) * (n / (i * i));
+	}
+	return ans;
 }
 
-int64_t count_square_free_numbers(int64_t m)
-{
-    int64_t answer = 0;
-    int32_t j = 0;
-    int32_t m_sqrt = sqrt(m);
-    if ((int64_t)m_sqrt * m_sqrt < m)
-    {
-        m_sqrt += 1;
-    }
-    for (int32_t i = 1; i < m_sqrt; i = j + 1)
-    {
-        j = sqrt(m / (m / ((int64_t) i * i)));
-        answer += (mobius(j) - mobius(i - 1)) * (m / ((int64_t) i * i));
-    }
-    return answer;
+ll squareFree(ll n) {
+	int d = sqrt(n);
+    if ((ll)d * d < n){ d += 1;}
+	int i, j;
+	ll ans = 0;
+	for (i = 1; i < d; i = j + 1) {
+		j = sqrt(n / (n / ((ll)i * i)));
+		ans += (mertens(j) - mertens(i - 1)) * (n / ((ll)i * i));
+		i = j + 1;
+	}
+	return ans;
 }
 
-int64_t find_kth_square_free_number(int64_t k)
-{
-    if (k == 4)
-    {
+ll inline multiple(ll n, ll m, ll k) {
+	return (ll)((__int128)n * m / k);
+}
+
+ll solve(ll n) {
+    if (n == 4) {
         return 5;
     }
-    if (k == 1)
-    {
+    if (n == 1) {
         return 1;
     }
-    int64_t left;
-    int64_t right;
-    //1.6449340668482264364724151
-    if (k < (int64_t) 1e12)
-    {
-        left = 1;
-        right = k << 1;
-    }
-    else if (k <= (int64_t) 1e16)
-    {
-        left = int64_t((__int128) k * 164'493'406ll / 100'000'000ll);
-        right = int64_t((__int128) k * 164'493'407ll / 100'000'000ll);
-    }
-    else if (k <= (int64_t) 1e17)
-    {
-        left = int64_t((__int128) k * 164'493'406'684ll / 100'000'000'000ll);
-        right = int64_t((__int128) k * 164'493'406'685ll / 100'000'000'000ll);
-    }
-    else if (k <= (int64_t) 1e18)
-    {
-        left = int64_t((__int128) k * 1'644'934'066'848'000ll / 1'000'000'000'000'000ll);
-        right = int64_t((__int128) k * 1'644'934'066'848'400ll / 1'000'000'000'000'000ll);
-    }
-//    int64_t iteration_count = 1;
-    while (left < right)
-    {
-//        const auto time1 = std::chrono::high_resolution_clock::now();
-        int64_t mid = (left + right) >> 1;
-        int64_t count = count_square_free_numbers(mid);
-//        std::cout << mid << " " << count << "\n";
-        if (count < k)
-        {
-            left = mid + 1;
-        }
-        else
-        {
-            right = mid;
-        }
-//        const auto time2 = std::chrono::high_resolution_clock::now();
-//        std::cout << "Try #" << iteration_count << ":"
-//                  << std::chrono::duration_cast<std::chrono::milliseconds>(time2 - time1).count() << "ms\n";
-//        iteration_count += 1;
-    }
-    return left;
+	ll left;
+	ll right;
+
+	if (n < 1e12) {
+		left = 1;
+		right = n << 1;
+	}
+	else if (n < 10000000000000000) { // 1e16
+		left = multiple(n,  164493406, 100000000);
+		right = multiple(n, 164493407, 100000000);
+	}
+	else if (n < 100000000000000000) { // 1e17
+		left = multiple(n,  164493406684, 100000000000);
+		right = multiple(n, 164493406685, 100000000000);
+	}
+	else {
+		left = multiple(n,  1644934066848000, 1000000000000000);
+		right = multiple(n, 1644934066848400, 1000000000000000);
+	}
+
+
+	while (left < right) {
+		ll mid = (left + right) >> 1;
+		ll count = squareFree(mid);
+        if (count < n) {
+			left = mid + 1;
+		}
+		else {
+			right = mid;
+		}
+	}
+	return left;
 }
 
-int main()
-{
-    int64_t n;
+int main() {
+	for (int i = 1; i <= MAX; i++) {
+		for (int j = 2; i * j <= MAX; j++) {
+			mu[i * j] -= mu[i];
+		}
+		mu[i] += mu[i - 1];
+	}
+	ll n;
     std::cin >> n;
-//    const auto time1 = std::chrono::high_resolution_clock::now();
-    precompute_mobius();
-//    const auto time2 = std::chrono::high_resolution_clock::now();
-//    std::cout << "Precomputation time:" << std::chrono::duration_cast<std::chrono::milliseconds>(time2 - time1).count()
-//              << "ms\n";
-    std::cout << find_kth_square_free_number(n) << "\n";
-//    const auto time3 = std::chrono::high_resolution_clock::now();
-//    std::cout << "Total time:" << std::chrono::duration_cast<std::chrono::milliseconds>(time3 - time1).count()
-//              << "ms\n";
+	std::cout << solve(n) << "\n";
+	return 0;
 }
