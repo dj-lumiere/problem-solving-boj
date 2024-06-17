@@ -1,6 +1,5 @@
 # 13970 Power towers
-from sys import stdin, setrecursionlimit
-setrecursionlimit(500000)
+from sys import stdin
 
 
 def input():
@@ -49,16 +48,19 @@ def power_tower(eulerphi: list[int], tower: list[int], index: int, MOD: int):
         is_excessive_at_next = is_excessive(base, exp, MOD)
     return pow(base, exp, MOD)
 
-
+global is_excessive_at_next
+is_excessive_at_next = False
 eulerphi = [i for i in range(1000001)]
 precompute_euler_phi(1000000, eulerphi)
 N, M = map(int, input().split(" "))
 for _ in range(N):
     _, *tower = map(int, input().split(" "))
-    global is_excessive_at_next
     is_excessive_at_next = False
     for i, v in enumerate(tower):
         if v == 1:
             tower = tower[:i]
             break
+    if not tower:
+        print(1)
+        continue
     print(power_tower(eulerphi, tower, 0, M) % M)
