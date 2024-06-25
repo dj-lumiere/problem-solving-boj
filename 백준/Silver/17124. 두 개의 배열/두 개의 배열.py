@@ -34,9 +34,10 @@ with open(0, 'rb') as f:
         b = sorted([-INF, -INF] + [int(input()) for _ in range(m)] + [INF, INF])
         c = [0] * n
         for i, v in enumerate(a):
-            b_left = b[bisect_left(b, v) - 1]
-            b_mid = b[bisect_left(b, v)]
-            b_right = b[bisect_left(b, v) + 1]
+            idx = bisect_left(b, v)
+            b_left = b[idx - 1]
+            b_mid = b[idx]
+            b_right = b[idx + 1]
             c_candidate = [b_left, b_mid, b_right]
             if abs(v - b_left) == min(map(lambda x: abs(x - v), c_candidate)):
                 c[i] = b_left
