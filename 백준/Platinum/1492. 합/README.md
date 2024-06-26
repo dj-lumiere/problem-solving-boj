@@ -4,11 +4,15 @@
 
 ### 성능 요약
 
-메모리: 33376 KB, 시간: 44 ms
+메모리: 133832 KB, 시간: 356 ms
 
 ### 분류
 
-조합론(combinatorics), 다이나믹 프로그래밍(dp), 분할 정복을 이용한 거듭제곱(exponentiation_by_squaring), 수학(math), 모듈로 곱셈 역원(modular_multiplicative_inverse), 정수론(number_theory)
+조합론, 다이나믹 프로그래밍, 분할 정복을 이용한 거듭제곱, 수학, 모듈로 곱셈 역원, 정수론
+
+### 제출 일자
+
+2024년 6월 26일 18:39:27
 
 ### 문제 설명
 

@@ -1,41 +1,64 @@
-# 1492 합
-from math import factorial
+from base64 import b64decode, b64encode
+from bisect import bisect_left, bisect_right
+from string import ascii_uppercase, ascii_lowercase
+from time import perf_counter_ns, sleep
+from datetime import datetime, time, timedelta
+from sys import setrecursionlimit
+from os import write
+from random import randint, shuffle
+from collections import deque, Counter
+from math import comb, lcm, log, gcd, floor, log2, log10, pi, ceil, factorial, sqrt
+from heapq import heappush, heappop
+from itertools import combinations, permutations, combinations_with_replacement, product, zip_longest
+from decimal import Decimal, getcontext
+from fractions import Fraction
+from functools import lru_cache, reduce
+import re
+from datetime import datetime, time, timedelta
 
-N, K = list(map(int, input().split(" ")))
+getcontext().prec = 1000
 
-dp = [0 for _ in range(0, K+1)]
-dp[0] = N
-modulo = 10**9+7
 
-def nCr(n: int, r: int) -> int:
-    return factorial(n) // (factorial(r) * factorial(n - r))
+def powered_sum(n, d):
+    if n <= d + 2:
+        return sum(pow(i, d, MOD) for i in range(n + 1)) % MOD
+    smaller_sum = [0]
+    for i in range(1, d + 3):
+        smaller_sum.append(smaller_sum[-1] + pow(i, d, MOD))
+    numerator_accumulate = [n]
+    for i in range(1, d + 3):
+        numerator_accumulate.append(numerator_accumulate[-1] * (n - i) % MOD)
+    numerator_inverse = [pow(numerator_accumulate[-1], -1, MOD)]
+    for i in reversed(range(1, d + 3)):
+        numerator_inverse.append(numerator_inverse[-1] * (n - i) % MOD)
+    numerator_inverse.reverse()
+    numerator_sub_inverse = [i * j % MOD for i, j in zip(numerator_accumulate, numerator_inverse[1:])]
+    denominator_sub = list(range(-d - 1, 0)) + list(range(1, d + 2))
+    denominator_accumulate = [1]
+    for v in denominator_sub:
+        denominator_accumulate.append(denominator_accumulate[-1] * v % MOD)
+    denominator_accumulate_inverse = [pow(denominator_accumulate[-1], -1, MOD)]
+    for i, v in enumerate(reversed(denominator_sub)):
+        denominator_accumulate_inverse.append(denominator_accumulate_inverse[-1] * v % MOD)
+    denominator_accumulate_inverse.reverse()
+    denominators = [i * j % MOD for i, j in zip(denominator_accumulate, denominator_accumulate_inverse[d + 1:])]
+    numerators = [numerator_accumulate[-1] * numerator_inverse[0] * v % MOD for v in numerator_sub_inverse]
+    coefficients = [i * j % MOD for i, j in zip(numerators, denominators)]
+    return sum(i * j % MOD for i, j in zip(coefficients, smaller_sum[1:])) % MOD
 
-def eea(a:int, b:int, d:int) -> list[int]:
-    # (x(0),y(0)) = (1,0), (x(1),y(1)) = (0,1)
-    x_y_seq_memo:list[list[int]] = [[1,0],[0,1]]
-    # r(0) = a, r(1) = b
-    r_memo:list[int] = [a,b]
-    q_i:int = 0
-    i:int = 2
-    while True:
-        # q(i+2) = r(i)//r(i+1)
-        q_i = r_memo[(i-2)%2] // r_memo[(i-1)%2]
-        # r(i+2) = r(i)//r(i+1)
-        r_memo[i%2]=r_memo[(i-2)%2] % r_memo[(i-1)%2]
-        # (x(i+2),y(i+2))=(x(i)-x(i+1)*q(i+2),y(i)-y(i+1)*q(i+2))
-        for j in range(2):
-            x_y_seq_memo[i%2][j]=x_y_seq_memo[(i-2)%2][j]-x_y_seq_memo[(i-1)%2][j]*q_i
-        if r_memo[i%2]==d:
-            break
-        else:
-            i += 1
-    return x_y_seq_memo[i%2]
 
-for i in range(1, K+1):
-    result = ((N+1)**(i+1) - 1) % modulo
-    for j in range(0, i):
-        result -= nCr(i+1, j) * dp[j] % modulo
-    result *= eea(i+1, modulo, 1)[0]
-    result %= modulo
-    dp[i] = result
-print(dp[K] % modulo)
+# with open(0, 'rb') as f:
+with open(0, 'rb') as f:
+    tokens = iter(f.read().split())
+    input = lambda: next(tokens)
+    print = lambda x: write(1, "\n".join(x).strip().encode())
+    eprint = lambda *args, sep="\n": write(2, (sep.join(map(str, args)) + "\n").encode())
+    answers = ["" for _ in range(0)]
+    INF = 10 ** 18
+    MOD = 1_000_000_007
+    t = 1
+    for hh in range(t):
+        n, k = int(input()), int(input())
+        answer = powered_sum(n, k) % MOD
+        answers.append(f"{answer}")
+    print(answers)
