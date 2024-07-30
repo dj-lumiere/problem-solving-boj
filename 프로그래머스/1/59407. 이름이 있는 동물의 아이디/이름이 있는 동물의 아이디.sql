@@ -1,0 +1,4 @@
+-- 코드를 입력하세요
+SELECT f.ANIMAL_ID as ANIMAL_ID
+FROM ANIMAL_INS as f
+WHERE f.NAME IS not NULL
