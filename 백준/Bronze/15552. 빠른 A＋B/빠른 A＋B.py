@@ -1,5 +1,5 @@
 from sys import stdout, stderr
-from __pypy__ import newlist_hint
+from __pypy__ import newlist_hint, builders
 
 with open(0, 'r') as f:
     tokens = iter(f.read().split("\n"))
@@ -11,9 +11,11 @@ with open(0, 'r') as f:
     INF = 10 ** 18
     MOD = 1_000_000_000
     t = int(input())
-    answers = newlist_hint(t)
+    answers = builders.StringBuilder(1 << 18)
     for hh in range(t):
         a, b = map(int, input().split())
         answer = a + b
-        answers.append(f"{answer}")
-    print(*answers, sep="\n")
+        for i in f"{answer}":
+            answers.append(i)
+        answers.append("\n")
+    print(answers.build())
