@@ -119,11 +119,19 @@ with open(0, 'r') as f:
         if u_a1.size() == 0 and u_a2.size() == 0:
             u_a1 = Vector(1, 0)
             u_a2 = Vector(0, 1)
+        elif u_a1.size() == 0:
+            u_a1 = Vector(u_a2.y, -u_a2.x)
+        elif u_a2.size() == 0:
+            u_a2 = Vector(u_a1.y, -u_a1.x)
         u_b1 = Vector(b1.y, -b1.x)
         u_b2 = Vector(b2.y, -b2.x)
         if u_b1.size() == 0 and u_b2.size() == 0:
             u_b1 = Vector(1, 0)
             u_b2 = Vector(0, 1)
+        elif u_b1.size() == 0:
+            u_b1 = Vector(u_b2.y, -u_b2.x)
+        elif u_b2.size() == 0:
+            u_b2 = Vector(u_b1.y, -u_b1.x)
         u_a1 = u_a1 / u_a1.size()
         u_b1 = u_b1 / u_b1.size()
         u_a2 = u_a2 / u_a2.size()
