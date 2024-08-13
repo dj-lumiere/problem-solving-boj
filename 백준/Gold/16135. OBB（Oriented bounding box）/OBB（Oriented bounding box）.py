@@ -115,16 +115,22 @@ with open(0, 'r') as f:
         a2 = (vect_a2 if a1.dot_product(vect_a2) == 0 else vect_a3) * 0.5
         b2 = (vect_b2 if b1.dot_product(vect_b2) == 0 else vect_b3) * 0.5
         u_a1 = Vector(a1.y, -a1.x)
-        u_b1 = Vector(b1.y, -b1.x)
         u_a2 = Vector(a2.y, -a2.x)
+        if u_a1.size() == 0 and u_a2.size() == 0:
+            u_a1 = Vector(1, 0)
+            u_a2 = Vector(0, 1)
+        u_b1 = Vector(b1.y, -b1.x)
         u_b2 = Vector(b2.y, -b2.x)
+        if u_b1.size() == 0 and u_b2.size() == 0:
+            u_b1 = Vector(1, 0)
+            u_b2 = Vector(0, 1)
         u_a1 = u_a1 / u_a1.size()
         u_b1 = u_b1 / u_b1.size()
         u_a2 = u_a2 / u_a2.size()
         u_b2 = u_b2 / u_b2.size()
         if any(
-        abs(vect_d.dot_product(u)) >= abs(a1.dot_product(u)) + abs(a2.dot_product(u)) + abs(b1.dot_product(u)) + abs(b2.dot_product(u))
-        for u in (u_a1, u_a2, u_b1, u_b2)):
+                abs(vect_d.dot_product(u)) >= abs(a1.dot_product(u)) + abs(a2.dot_product(u)) + abs(b1.dot_product(u)) + abs(b2.dot_product(u))
+                for u in (u_a1, u_a2, u_b1, u_b2)):
             answer = 0
         else:
             answer = 1
