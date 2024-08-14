@@ -68,6 +68,10 @@ class Vector:
         return f"[x: {self.x}, y: {self.y}]"
 
 
+def normalize(v):
+    return v / v.size()
+
+
 with open(0, 'r') as f:
     tokens = iter(f.read().split())
     input = lambda: next(tokens, None)
@@ -116,29 +120,12 @@ with open(0, 'r') as f:
         b2 = (vect_b2 if b1.dot_product(vect_b2) == 0 else vect_b3) * 0.5
         u_a1 = Vector(a1.y, -a1.x)
         u_a2 = Vector(a2.y, -a2.x)
-        if u_a1.size() == 0 and u_a2.size() == 0:
-            u_a1 = Vector(1, 0)
-            u_a2 = Vector(0, 1)
-        elif u_a1.size() == 0:
-            u_a1 = Vector(u_a2.y, -u_a2.x)
-        elif u_a2.size() == 0:
-            u_a2 = Vector(u_a1.y, -u_a1.x)
         u_b1 = Vector(b1.y, -b1.x)
         u_b2 = Vector(b2.y, -b2.x)
-        if u_b1.size() == 0 and u_b2.size() == 0:
-            u_b1 = Vector(1, 0)
-            u_b2 = Vector(0, 1)
-        elif u_b1.size() == 0:
-            u_b1 = Vector(u_b2.y, -u_b2.x)
-        elif u_b2.size() == 0:
-            u_b2 = Vector(u_b1.y, -u_b1.x)
-        u_a1 = u_a1 / u_a1.size()
-        u_b1 = u_b1 / u_b1.size()
-        u_a2 = u_a2 / u_a2.size()
-        u_b2 = u_b2 / u_b2.size()
+        possible_vectors_to_check = [u for u in (u_a1, u_a2, u_b1, u_b2) if u.size() != 0]
         if any(
                 abs(vect_d.dot_product(u)) >= abs(a1.dot_product(u)) + abs(a2.dot_product(u)) + abs(b1.dot_product(u)) + abs(b2.dot_product(u))
-                for u in (u_a1, u_a2, u_b1, u_b2)):
+                for u in possible_vectors_to_check):
             answer = 0
         else:
             answer = 1
