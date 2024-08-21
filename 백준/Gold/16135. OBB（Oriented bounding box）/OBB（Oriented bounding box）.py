@@ -122,8 +122,12 @@ with open(0, 'r') as f:
         u_a2 = Vector(a2.y, -a2.x)
         u_b1 = Vector(b1.y, -b1.x)
         u_b2 = Vector(b2.y, -b2.x)
-        possible_vectors_to_check = [u for u in (u_a1, u_a2, u_b1, u_b2) if u.size() != 0]
-        if any(
+        possible_vectors_to_check = [normalize(u) for u in (u_a1, u_a2, u_b1, u_b2) if u.size() != 0]
+        if not possible_vectors_to_check and vect_d.size() == 0:
+            answer = 0
+        elif not possible_vectors_to_check:
+            answer = 1
+        elif any(
                 abs(vect_d.dot_product(u)) >= abs(a1.dot_product(u)) + abs(a2.dot_product(u)) + abs(b1.dot_product(u)) + abs(b2.dot_product(u))
                 for u in possible_vectors_to_check):
             answer = 0
