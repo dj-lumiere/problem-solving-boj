@@ -1,53 +1,46 @@
-# 9663 N-Queen
+from sys import setrecursionlimit, stdout, stderr
 
-from collections import deque
-
-# x좌표가 같아도 안 되고, y좌표가 같아도 안 되고, x+y가 같아도 안 되고 abs(x-y)가 같아도 안 됨
-
-N: int = int(input())
-global result
-result = 0
-
-
-def n_queen_solution_counter(
-    n: int,
-    col: int,
-    rows: list[bool],
-    diag_ld_list: list[bool],
-    diag_rd_list: list[bool],
-):
-    if col == n:
-        global result
-        result += 1
-    else:
-        row = 0
-        while row < n:
-            diag_ld = col - row + n - 1
-            diag_rd = col + row
-            if not (rows[row] or diag_ld_list[diag_ld] or diag_rd_list[diag_rd]):
-                rows[row] = True
-                diag_ld_list[diag_ld] = True
-                diag_rd_list[diag_rd] = True
-                n_queen_solution_counter(n, col + 1, rows, diag_ld_list, diag_rd_list)
-                rows[row] = False
-                diag_ld_list[diag_ld] = False
-                diag_rd_list[diag_rd] = False
-            row += 1
-
-
-def n_queen(n: int) -> int:
-    if 1 < n < 4:
-        return 0
-    elif n == 1:
-        return 1
-    else:
-        rows, diag_ld_list, diag_rd_list = (
-            [False] * n,
-            [False] * (2 * n - 1),
-            [False] * (2 * n - 1),
-        )
-        n_queen_solution_counter(n, 0, rows, diag_ld_list, diag_rd_list)
-        return result
-
-
-print(n_queen(N))
+with open(0, 'r') as f:
+    tokens = iter(f.read().split())
+    input = lambda: next(tokens, None)
+    print = lambda *args, sep="\n", end="\n": stdout.write(sep.join(map(str, args)) + end)
+    eprint = lambda *args, sep=" ", end="\n": stderr.write(sep.join(map(str, args)) + end)
+    fprint = lambda *args, sep=" ", end="\n", file: file.write(sep.join(map(str, args)) + end)
+    is_inbound = lambda pos_x, size_x, pos_y, size_y: 0 <= pos_x < size_x and 0 <= pos_y < size_y
+    DELTA = [(0, -1), (-1, 0), (0, 1), (1, 0)]
+    INF = 10 ** 18
+    MOD = 1_000_000_000
+    t = 1
+    answers = []
+    for hh in range(t):
+        n = int(input())
+        answer = 0
+        if n == 1:
+            answer = 1
+        elif n < 4:
+            answer = 0
+        else:
+            # col number, row check, diag_ld_check, diag_rd_check
+            stack = [(0, 0, 0, 0)]
+            while stack:
+                col, row_check, diag_ld_check, diag_rd_check = stack.pop()
+                if col == n:
+                    answer += 1
+                    continue
+                row = 0
+                while row < n:
+                    diag_ld = col - row + n - 1
+                    diag_rd = col + row
+                    if row_check & (1 << row) or diag_ld_check & (1 << diag_ld) or diag_rd_check & (1 << diag_rd):
+                        row += 1
+                        continue
+                    row_check ^= (1 << row)
+                    diag_ld_check ^= (1 << diag_ld)
+                    diag_rd_check ^= (1 << diag_rd)
+                    stack.append((col + 1, row_check, diag_ld_check, diag_rd_check))
+                    row_check ^= (1 << row)
+                    diag_ld_check ^= (1 << diag_ld)
+                    diag_rd_check ^= (1 << diag_rd)
+                    row += 1
+        answers.append(f"{answer}")
+    print(*answers, sep="\n")
