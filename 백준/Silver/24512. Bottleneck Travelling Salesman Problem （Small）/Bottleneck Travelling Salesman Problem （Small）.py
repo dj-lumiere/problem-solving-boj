@@ -1,0 +1,56 @@
+from base64 import b64decode, b64encode
+from bisect import bisect_left, bisect_right
+from string import ascii_uppercase, ascii_lowercase
+from time import perf_counter_ns, sleep
+from datetime import datetime, time, timedelta
+from sys import setrecursionlimit, stdout, stderr
+from os import write
+from random import randint, shuffle
+from collections import deque, Counter
+from math import cos, log, gcd, floor, log2, log10, pi, ceil, factorial, sin, sqrt, atan2, tau
+from heapq import heapify, heappush, heappop
+from itertools import combinations, permutations, combinations_with_replacement, product, zip_longest, chain, repeat
+from decimal import Decimal, getcontext
+from fractions import Fraction
+from functools import lru_cache, reduce
+import re
+from datetime import datetime, time, timedelta
+
+getcontext().prec = 1000
+
+with open(0, 'r') as f:
+    tokens = iter(f.read().split())
+    input = lambda: next(tokens, None)
+    print = lambda *args, sep="\n", end="\n": stdout.write(sep.join(map(str, args)) + end)
+    eprint = lambda *args, sep=" ", end="\n": stderr.write(sep.join(map(str, args)) + end)
+    fprint = lambda *args, sep=" ", end="\n", file: file.write(sep.join(map(str, args)) + end)
+    is_inbound = lambda pos_x, size_x, pos_y, size_y: 0 <= pos_x < size_x and 0 <= pos_y < size_y
+    DELTA = [(0, 0), (0, -1), (1, 0), (0, 1), (-1, 0)]
+    INF = 10 ** 18
+    MOD = 1_000_000_000
+    t = 1
+    answers = []
+    for hh in range(1, t + 1):
+        n = int(input())
+        m = int(input())
+        total_cost = INF
+        length = [[INF for _ in range(n + 1)] for _ in range(n + 1)]
+        path = None
+        for _ in range(m):
+            u, v, c = (int(input()) for _ in range(3))
+            length[u][v] = c
+        for dots in permutations(range(1, n + 1)):
+            subtotal = -INF
+            for i, j in zip_longest(dots, dots[1:], fillvalue=dots[0]):
+                subtotal = max(subtotal, length[i][j])
+            if subtotal == -INF:
+                subtotal = INF
+            if total_cost > subtotal:
+                total_cost = subtotal
+                path = dots
+        if total_cost == INF:
+            answer = "-1"
+        else:
+            answer = f"{total_cost}\n{' '.join(map(str, path))}"
+        answers.append(f"{answer}")
+print(*answers, sep="\n")
