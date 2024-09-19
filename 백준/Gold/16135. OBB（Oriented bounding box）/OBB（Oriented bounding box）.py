@@ -111,8 +111,8 @@ with open(0, 'r') as f:
         vect_b2 = Vector(point_b3_x - point_b1_x, point_b3_y - point_b1_y)
         vect_a3 = Vector(point_a4_x - point_a1_x, point_a4_y - point_a1_y)
         vect_b3 = Vector(point_b4_x - point_b1_x, point_b4_y - point_b1_y)
-        vect_a_center = vect_a2
-        vect_b_center = vect_b2
+        vect_a_center = vect_a2 / 2
+        vect_b_center = vect_b2 / 2
         vect_d = rectangle_b_center - rectangle_a_center
         a1 = vect_a1 / 2
         b1 = vect_b1 / 2
@@ -122,11 +122,11 @@ with open(0, 'r') as f:
         u_a2 = Vector(a2.y, -a2.x)
         u_b1 = Vector(b1.y, -b1.x)
         u_b2 = Vector(b2.y, -b2.x)
-        possible_vectors_to_check = [normalize(u) for u in (u_a1, u_a2, u_b1, u_b2) if u.size() != 0]
+        possible_vectors_to_check = [u for u in (u_a1, u_a2, u_b1, u_b2) if u.size() != 0]
         if not possible_vectors_to_check and vect_d.size() == 0:
-            answer = 0
-        elif not possible_vectors_to_check:
             answer = 1
+        elif not possible_vectors_to_check:
+            answer = 0
         elif any(
                 abs(vect_d.dot_product(u)) >= abs(a1.dot_product(u)) + abs(a2.dot_product(u)) + abs(b1.dot_product(u)) + abs(b2.dot_product(u))
                 for u in possible_vectors_to_check):
