@@ -1,10 +1,39 @@
-from collections import deque
 from decimal import getcontext
-from itertools import combinations, product
-from math import floor, log10
 from sys import stdout, stderr
 
 getcontext().prec = 1000
+
+
+def sign(x):
+    if not x:
+        return 0
+    return x // abs(x)
+
+
+def ccw(x1, y1, x2, y2, x3, y3):
+    return sign(x1 * y2 + x2 * y3 + x3 * y1 - (x2 * y1 + x3 * y2 + x1 * y3))
+
+
+def has_crosspoint(x1, y1, x2, y2, x3, y3, x4, y4):
+    is_123_ccw = ccw(x1, y1, x2, y2, x3, y3)
+    is_124_ccw = ccw(x1, y1, x2, y2, x4, y4)
+    is_341_ccw = ccw(x3, y3, x4, y4, x1, y1)
+    is_342_ccw = ccw(x3, y3, x4, y4, x2, y2)
+    can_have_crosspoint = False
+    if is_123_ccw * is_124_ccw <= 0 and is_341_ccw * is_342_ccw <= 0:
+        can_have_crosspoint = True
+    if (
+            is_123_ccw * is_124_ccw == 0
+            and is_341_ccw * is_342_ccw == 0
+            and not (
+            min(x1, x2) <= max(x3, x4)
+            and min(x3, x4) <= max(x1, x2)
+            and min(y1, y2) <= max(y3, y4)
+            and min(y3, y4) <= max(y1, y2)
+    )
+    ):
+        can_have_crosspoint = False
+    return int(can_have_crosspoint)
 
 
 class MapIndex:
@@ -105,30 +134,75 @@ with open(0, 'r') as f:
         point_b4_y = rectangle_b[7]
         rectangle_a_center = Vector(sum(rectangle_a[::2]), sum(rectangle_a[1::2])) / 4
         rectangle_b_center = Vector(sum(rectangle_b[::2]), sum(rectangle_b[1::2])) / 4
+        is_a_rectangle = True
+        is_a_line = False
+        is_a_point = False
+        is_b_rectangle = True
+        is_b_line = False
+        is_b_point = False
         vect_a1 = Vector(point_a2_x - point_a1_x, point_a2_y - point_a1_y)
         vect_b1 = Vector(point_b2_x - point_b1_x, point_b2_y - point_b1_y)
         vect_a2 = Vector(point_a3_x - point_a1_x, point_a3_y - point_a1_y)
         vect_b2 = Vector(point_b3_x - point_b1_x, point_b3_y - point_b1_y)
         vect_a3 = Vector(point_a4_x - point_a1_x, point_a4_y - point_a1_y)
         vect_b3 = Vector(point_b4_x - point_b1_x, point_b4_y - point_b1_y)
-        vect_a_center = vect_a2 / 2
-        vect_b_center = vect_b2 / 2
+        vect_a_center = vect_a2
+        vect_b_center = vect_b2
         vect_d = rectangle_b_center - rectangle_a_center
         a1 = vect_a1 / 2
         b1 = vect_b1 / 2
         a2 = (vect_a2 if a1.dot_product(vect_a2) == 0 else vect_a3) / 2
         b2 = (vect_b2 if b1.dot_product(vect_b2) == 0 else vect_b3) / 2
+        a_line = []
+        a_point = []
+        b_line = []
+        b_point = []
+        if a1.size() == 0 and a2.size() == 0:
+            is_a_rectangle = False
+            is_a_point = True
+            a_point = [point_a1_x, point_a1_y]
+        elif a1.size() == 0:
+            is_a_rectangle = False
+            is_a_line = True
+            a_line = [point_a1_x, point_a1_y, point_a3_x, point_a3_y] if a2 * 2 == vect_a2 else [point_a1_x, point_a1_y,
+                                                                                                 point_a4_x, point_a4_y]
+        elif a2.size() == 0:
+            is_a_rectangle = False
+            is_a_line = True
+            a_line = [point_a1_x, point_a1_y, point_a2_x, point_a2_y]
+        if b1.size() == 0 and b2.size() == 0:
+            is_b_point = True
+            is_b_rectangle = False
+            b_point = [point_b1_x, point_b1_y]
+        elif b1.size() == 0:
+            is_b_rectangle = False
+            is_b_line = True
+            b_line = [point_b1_x, point_b1_y, point_b3_x, point_b3_y] if b2 * 2 == vect_b2 else [point_b1_x, point_b1_y,
+                                                                                                 point_b4_x, point_b4_y]
+        elif b2.size() == 0:
+            is_b_rectangle = False
+            is_b_line = True
+            b_line = [point_b1_x, point_b1_y, point_b2_x, point_b2_y]
         u_a1 = Vector(a1.y, -a1.x)
         u_a2 = Vector(a2.y, -a2.x)
         u_b1 = Vector(b1.y, -b1.x)
         u_b2 = Vector(b2.y, -b2.x)
-        possible_vectors_to_check = [u for u in (u_a1, u_a2, u_b1, u_b2) if u.size() != 0]
-        if not possible_vectors_to_check and vect_d.size() == 0:
-            answer = 1
-        elif not possible_vectors_to_check:
-            answer = 1
+        possible_vectors_to_check = [normalize(u) for u in (u_a1, u_a2, u_b1, u_b2) if u.size() != 0]
+        if is_a_point and is_b_point:
+            answer = int(a_point == b_point)
+        elif is_a_point and is_b_line:
+            x1, y1, x2, y2 = b_line
+            x3, y3 = a_point
+            answer = int((y2 - y1) * (x3 - x1) == (x2 - x1) * (y3 - y1))
+        elif is_b_point and is_a_line:
+            x1, y1, x2, y2 = a_line
+            x3, y3 = b_point
+            answer = int((y2 - y1) * (x3 - x1) == (x2 - x1) * (y3 - y1))
+        elif is_b_line and is_b_line:
+            answer = has_crosspoint(*a_line, *b_line)
         elif any(
-                abs(vect_d.dot_product(u)) >= abs(a1.dot_product(u)) + abs(a2.dot_product(u)) + abs(b1.dot_product(u)) + abs(b2.dot_product(u))
+                abs(vect_d.dot_product(u)) >= abs(a1.dot_product(u)) + abs(a2.dot_product(u)) + abs(
+                    b1.dot_product(u)) + abs(b2.dot_product(u))
                 for u in possible_vectors_to_check):
             answer = 0
         else:
