@@ -68,6 +68,10 @@ class Vector:
         return f"[x: {self.x}, y: {self.y}]"
 
 
+def normalize(v):
+    return v / v.size()
+
+
 with open(0, 'r') as f:
     tokens = iter(f.read().split())
     input = lambda: next(tokens, None)
@@ -107,24 +111,25 @@ with open(0, 'r') as f:
         vect_b2 = Vector(point_b3_x - point_b1_x, point_b3_y - point_b1_y)
         vect_a3 = Vector(point_a4_x - point_a1_x, point_a4_y - point_a1_y)
         vect_b3 = Vector(point_b4_x - point_b1_x, point_b4_y - point_b1_y)
-        vect_a_center = vect_a2 * 0.5
-        vect_b_center = vect_b2 * 0.5
+        vect_a_center = vect_a2 / 2
+        vect_b_center = vect_b2 / 2
         vect_d = rectangle_b_center - rectangle_a_center
-        a1 = vect_a1 * 0.5
-        b1 = vect_b1 * 0.5
-        a2 = (vect_a2 if a1.dot_product(vect_a2) == 0 else vect_a3) * 0.5
-        b2 = (vect_b2 if b1.dot_product(vect_b2) == 0 else vect_b3) * 0.5
+        a1 = vect_a1 / 2
+        b1 = vect_b1 / 2
+        a2 = (vect_a2 if a1.dot_product(vect_a2) == 0 else vect_a3) / 2
+        b2 = (vect_b2 if b1.dot_product(vect_b2) == 0 else vect_b3) / 2
         u_a1 = Vector(a1.y, -a1.x)
-        u_b1 = Vector(b1.y, -b1.x)
         u_a2 = Vector(a2.y, -a2.x)
+        u_b1 = Vector(b1.y, -b1.x)
         u_b2 = Vector(b2.y, -b2.x)
-        u_a1 = u_a1 / u_a1.size()
-        u_b1 = u_b1 / u_b1.size()
-        u_a2 = u_a2 / u_a2.size()
-        u_b2 = u_b2 / u_b2.size()
-        if any(
-        abs(vect_d.dot_product(u)) >= abs(a1.dot_product(u)) + abs(a2.dot_product(u)) + abs(b1.dot_product(u)) + abs(b2.dot_product(u))
-        for u in (u_a1, u_a2, u_b1, u_b2)):
+        possible_vectors_to_check = [u for u in (u_a1, u_a2, u_b1, u_b2) if u.size() != 0]
+        if not possible_vectors_to_check and vect_d.size() == 0:
+            answer = 1
+        elif not possible_vectors_to_check:
+            answer = 1
+        elif any(
+                abs(vect_d.dot_product(u)) >= abs(a1.dot_product(u)) + abs(a2.dot_product(u)) + abs(b1.dot_product(u)) + abs(b2.dot_product(u))
+                for u in possible_vectors_to_check):
             answer = 0
         else:
             answer = 1
