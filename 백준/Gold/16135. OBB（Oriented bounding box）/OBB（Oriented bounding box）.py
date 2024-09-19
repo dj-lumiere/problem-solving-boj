@@ -111,13 +111,13 @@ with open(0, 'r') as f:
         vect_b2 = Vector(point_b3_x - point_b1_x, point_b3_y - point_b1_y)
         vect_a3 = Vector(point_a4_x - point_a1_x, point_a4_y - point_a1_y)
         vect_b3 = Vector(point_b4_x - point_b1_x, point_b4_y - point_b1_y)
-        vect_a_center = vect_a2 * 0.5
-        vect_b_center = vect_b2 * 0.5
+        vect_a_center = vect_a2
+        vect_b_center = vect_b2
         vect_d = rectangle_b_center - rectangle_a_center
-        a1 = vect_a1 * 0.5
-        b1 = vect_b1 * 0.5
-        a2 = (vect_a2 if a1.dot_product(vect_a2) == 0 else vect_a3) * 0.5
-        b2 = (vect_b2 if b1.dot_product(vect_b2) == 0 else vect_b3) * 0.5
+        a1 = vect_a1 / 2
+        b1 = vect_b1 / 2
+        a2 = (vect_a2 if a1.dot_product(vect_a2) == 0 else vect_a3) / 2
+        b2 = (vect_b2 if b1.dot_product(vect_b2) == 0 else vect_b3) / 2
         u_a1 = Vector(a1.y, -a1.x)
         u_a2 = Vector(a2.y, -a2.x)
         u_b1 = Vector(b1.y, -b1.x)
