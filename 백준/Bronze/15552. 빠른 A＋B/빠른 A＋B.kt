@@ -26,38 +26,52 @@ fun fprint(vararg args: Any?, sep: String = " ", end: String = "\n", file: Print
     file.flush()
 }
 
+fun fastParseInt(s: String): Int {
+    var num = 0
+    var isNegative = false
+    for (i in s.indices) {
+        val ch = s[i]
+        if (i == 0 && ch == '-') {
+            isNegative = true
+        } else {
+            num = (num shl 3) + (num shl 1) + (ch - '0')
+        }
+    }
+    return if (isNegative) -num else num
+}
+
 lateinit var tokens: Iterator<String>
 
 fun main() {
-    val USE_FILE = false // Set to 'false' to use standard input
-
+    val USE_FILE = false // Set to 'false' to use standard 
     // Set up input stream
     val inputStream: InputStream = if (USE_FILE) {
         File("input2.txt").inputStream()
     } else {
         System.`in`
     }
-
-    val reader = BufferedReader(InputStreamReader(inputStream))
-    var tokenizer = StringTokenizer("")
-
-    val input: () -> String = {
-        while (!tokenizer.hasMoreTokens()) {
-            val line = reader.readLine() ?: throw NoSuchElementException("No more tokens available")
-            tokenizer = StringTokenizer(line)
-        }
-        tokenizer.nextToken()
-    }
-    val t = input().toInt()
-    val DELTA = arrayListOf(0 to 0, 0 to -1, 0 to 1, -1 to 0, 1 to 0)
-    val isInbound =
-        { posX: Int, sizeX: Int, posY: Int, sizeY: Int -> (0 <= posX) && (posX < sizeX) && (0 <= posY) && (posY < sizeY) }
     val answers = arrayListOf<String>()
-    for (h in 1..t) {
-        val a = input().toInt()
-        val b = input().toInt()
-        val answer = a+b
-        answers.add("${a+b}")
+    BufferedReader(InputStreamReader(inputStream)).use { reader ->
+        var tokenizer = StringTokenizer("")
+
+        val input: () -> String = {
+            while (!tokenizer.hasMoreTokens()) {
+                val line = reader.readLine() ?: throw NoSuchElementException("No more tokens available")
+                tokenizer = StringTokenizer(line)
+            }
+            tokenizer.nextToken()
+        }
+        val t = fastParseInt(input())
+        val DELTA = arrayListOf(0 to 0, 0 to -1, 0 to 1, -1 to 0, 1 to 0)
+        val isInbound =
+            { posX: Int, sizeX: Int, posY: Int, sizeY: Int -> (0 <= posX) && (posX < sizeX) && (0 <= posY) && (posY < sizeY) }
+
+        for (h in 1..t) {
+            val a = fastParseInt(input())
+            val b = fastParseInt(input())
+            val answer = a + b
+            answers.add("$answer")
+        }
     }
-    print(*answers.toTypedArray(), sep="\n")
+    print(*answers.toTypedArray(), sep = "\n")
 }
