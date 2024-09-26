@@ -136,7 +136,7 @@ with open(0, 'r') as f:
     for hh in range(1, t + 1):
         q = int(input())
         prices = SortedList()
-        for i in range(q+1):
+        for i in range(q + 1):
             n = 1 if i < q else 3
             if n == 1:
                 s = int(input())
@@ -152,12 +152,12 @@ with open(0, 'r') as f:
                     answers.append(f"{answer}")
                     continue
                 min_price = prices[0]
-                answer = 0
-                #eprint(prices)
-                for i in range(20):
-                    page_book_count = prices.bisect_right((min_price << (i + 1)) - 1) - prices.bisect_left(min_price << i)
-                    #eprint(min_price << i, (min_price << (i + 1)) - 1, page_book_count)
-                    if page_book_count:
-                        answer += 1
+                answer = 1
+                while min_price != prices[-1]:
+                    next_index = prices.bisect_left(min_price * 2)
+                    if next_index >= len(prices):
+                        break
+                    min_price = prices[next_index]
+                    answer += 1
                 answers.append(f"{answer}")
     print(*answers, sep="\n")
