@@ -23,25 +23,18 @@ with open(0, 'r') as f:
         grid = [list(map(int, input())) for _ in range(m)]
         minimum_wall_to_destroy = [[INF for _ in range(n)] for _ in range(m)]
         minimum_wall_to_destroy[0][0] = 0
-        minimum_distance = [[INF for _ in range(n)] for _ in range(m)]
-        minimum_distance[0][0] = 1
-        queue = [(0, 1, 0, 0)]
+        queue = [(0, 0, 0)]
         while queue:
-            ccost, cdist, cx, cy = heappop(queue)
-            # eprint(cx, cy, ccost, minimum_wall_to_destroy, minimum_distance)
+            ccost, cx, cy = heappop(queue)
             for dx, dy in DELTA:
                 nx, ny = cx + dx, cy + dy
                 if not is_inbound(nx, n, ny, m):
                     continue
-                ncost, ndist = ccost + grid[ny][nx], cdist + 1
+                ncost = ccost + grid[ny][nx]
                 if ncost >= minimum_wall_to_destroy[ny][nx]:
                     continue
                 minimum_wall_to_destroy[ny][nx] = min(minimum_wall_to_destroy[ny][nx], ncost)
-                minimum_distance[ny][nx] = INF
-                if ndist >= minimum_distance[ny][nx]:
-                    continue
-                minimum_distance[ny][nx] = min(minimum_distance[ny][nx], ndist)
-                heappush(queue, (ncost, ndist, nx, ny))
+                heappush(queue, (ncost, nx, ny))
         answer = minimum_wall_to_destroy[-1][-1]
         answers.append(f"{answer}")
     print(*answers, sep="\n")
