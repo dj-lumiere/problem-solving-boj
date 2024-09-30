@@ -1,32 +1,38 @@
 # 11690 LCM(1, 2, ..., n)
+from math import ceil
+
 
 N = int(input())
-prime_list: list[bool] = [False] * 2 + [True for i in range(2, 10000 + 1)]
-for x in range(2, 100 + 1):
+finder_limit = ceil(N**0.5)
+finder_limit2 = ceil(N**0.25)
+prime_list = [False] * 2 + [True for i in range(2, finder_limit + 1)]
+for x in range(2, finder_limit2 + 1):
     if prime_list[x]:
-        prime_list[x::x] = [False] * (10000 // x)
+        prime_list[x::x] = [False] * (finder_limit // x)
         prime_list[x] = True
 
 prime_list2 = [i for i, j in enumerate(prime_list) if j]
 prime_list3 = []
-for i in range(1, 10000):
-    prime_list: list[bool] = [True for i in range(10000)]
+for i in range(1, ceil(N / finder_limit)):
+    prime_list: list[bool] = [True for _ in range(finder_limit)]
     for x in prime_list2:
-        starting_point = (x - (i * 10000)) % x
+        starting_point = ceil(i * finder_limit / x) * x - i * finder_limit
         prime_list[starting_point::x] = [False] * (
-            ((i + 1) * 10000 - 1) // x - (i * 10000 - 1) // x
+            ((i + 1) * finder_limit - 1) // x - (i * finder_limit - 1) // x
         )
-    prime_list3 += [j + 10000 * i for j, k in enumerate(prime_list) if k]
+    prime_list3 += [
+        j + finder_limit * i
+        for j, k in enumerate(prime_list)
+        if k and (j + finder_limit * i <= N)
+    ]
 
 mod = 1
 for i in prime_list2:
-    if i <= N:
-        next_i = i
-        while next_i <= N:
-            mod = mod * i % 4294967296
-            next_i *= i
+    next_i = i
+    while next_i <= N:
+        mod = (mod * i) & 0xffffffff
+        next_i *= i
 for i in prime_list3:
-    if i <= N:
-        mod = mod * i % 4294967296
+    mod = (mod * i) & 0xffffffff
 
 print(mod)
