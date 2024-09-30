@@ -3,18 +3,28 @@ using System.Collections;
 public class IOManager : IDisposable
 {
     private Boolean _disposed;
-    private TextReader _inputReader;
     private IEnumerator<String> _tokens;
+    private const int bufferSize = 131072;
+    private StreamReader _inputReader;
+    public static StreamReader StandardInput = new(new
+        BufferedStream(Console.OpenStandardInput(), bufferSize));
+    public static StreamWriter StandardOutput = new(new
+        BufferedStream(Console.OpenStandardOutput(), bufferSize));
+    public static StreamWriter StandardError = new(new
+        BufferedStream(Console.OpenStandardError(), bufferSize));
+
 
     public IOManager(String inputFileName = null)
     {
         if (inputFileName != null)
         {
-            _inputReader = new StreamReader(inputFileName);
+            var fileStream = new FileStream(inputFileName, FileMode.Open, FileAccess.Read);
+            var bufferedStream = new BufferedStream(fileStream);
+            _inputReader = new StreamReader(bufferedStream);
         }
         else
         {
-            _inputReader = Console.In;
+            _inputReader = StandardInput;
         }
 
         InitializeTokens();
@@ -29,7 +39,10 @@ public class IOManager : IDisposable
     private void InitializeTokens()
     {
         var content = _inputReader.ReadToEnd();
-        _inputReader.Dispose();
+        if (_inputReader != StandardInput)
+        {
+            _inputReader.Dispose();
+        }
         var tokensArray = content.Split((Char[])null, StringSplitOptions.RemoveEmptyEntries);
         _tokens = ((IEnumerable<String>)tokensArray).GetEnumerator();
     }
@@ -47,20 +60,25 @@ public class IOManager : IDisposable
 
     public void Print(String sep = "\n", String end = "\n", params Object[] args)
     {
-        PrintWithOptions(Console.Out, args, sep, end);
+        PrintWithOptions(StandardOutput, args, sep, end);
     }
 
     public void EPrint(String sep = " ", String end = "\n", params Object[] args)
     {
-        PrintWithOptions(Console.Error, args, sep, end);
+        PrintWithOptions(StandardError, args, sep, end);
     }
 
-    public void FPrint(TextWriter file, String sep = " ", String end = "\n", params Object[] args)
+    public void FPrint(String file, String sep = " ", String end = "\n", params Object[] args)
     {
-        PrintWithOptions(file, args, sep, end);
+        using (var fileStream = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Write))
+        using (var bufferedStream = new BufferedStream(fileStream))
+        using (var writer = new StreamWriter(bufferedStream) { AutoFlush = true })
+        {
+            PrintWithOptions(writer, args, sep, end);
+        }
     }
 
-    private void PrintWithOptions(TextWriter writer, Object[] args, String sep, String end)
+    private void PrintWithOptions(StreamWriter writer, Object[] args, String sep, String end)
     {
         var flattenedArgs = new List<String>();
         foreach (var arg in args)
@@ -80,6 +98,7 @@ public class IOManager : IDisposable
 
         var output = String.Join(sep, flattenedArgs);
         writer.Write(output + end);
+        writer.Flush();
     }
 
     protected virtual void Dispose(Boolean disposing)
@@ -119,7 +138,6 @@ internal class Program
                 var b = Int32.Parse(io.Input());
                 answers.Add($"{a + b}");
             }
-
             io.Print("\n", "\n", answers);
         }
     }
