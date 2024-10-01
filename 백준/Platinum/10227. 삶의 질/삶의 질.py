@@ -56,9 +56,9 @@ class SortedList:
         self.fenwick = FenwickTree([0])
         self.size = 0
         for item in iterable:
-            self.insert(item)
+            self.add(item)
 
-    def insert(self, x):
+    def add(self, x):
         i = bisect_left(self.macro, x)
         j = bisect_right(self.micros[i], x)
         self.micros[i].insert(j, x)
@@ -143,8 +143,30 @@ with open(0, 'r') as f:
         r, c, h, w = (int(input()) for _ in range(4))
         grid = [[int(input()) for _ in range(c)] for _ in range(r)]
         highest_quality_rank = INF
-        for i, j in product(range(r - h + 1), range(c - w + 1)):
-            current_grid = SortedList([grid[i + k][j + l] for k, l in product(range(h), range(w))])
-            highest_quality_rank = min(highest_quality_rank, current_grid[h * w // 2])
+        current_grid = SortedList([grid[k][l] for k, l in product(range(h), range(w))])
+        highest_quality_rank = min(highest_quality_rank, current_grid[h * w // 2])
+        for i in range(r - h + 1):
+            if i & 1:
+                for j in reversed(range(c - w)):
+                    for k in range(h):
+                        current_grid.remove(grid[i + k][j + w])
+                        current_grid.add(grid[i + k][j])
+                    highest_quality_rank = min(highest_quality_rank, current_grid[h * w // 2])
+                if i != r - h:
+                    for k in range(w):
+                        current_grid.remove(grid[i][k])
+                        current_grid.add(grid[i + h][k])
+                    highest_quality_rank = min(highest_quality_rank, current_grid[h * w // 2])
+            else:
+                for j in range(c - w):
+                    for k in range(h):
+                        current_grid.remove(grid[i + k][j])
+                        current_grid.add(grid[i + k][j + w])
+                    highest_quality_rank = min(highest_quality_rank, current_grid[h * w // 2])
+                if i != r - h:
+                    for k in range(1, w + 1):
+                        current_grid.remove(grid[i][c - k])
+                        current_grid.add(grid[i + h][c - k])
+                    highest_quality_rank = min(highest_quality_rank, current_grid[h * w // 2])
         answers.append(f"{highest_quality_rank}")
     print(*answers, sep="\n")
