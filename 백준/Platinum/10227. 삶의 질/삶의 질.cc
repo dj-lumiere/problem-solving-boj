@@ -1,150 +1,72 @@
 #include <iostream>
 #include <vector>
-#include <cstdint>
-#include <set>
+#include <algorithm>
+#include <iterator>
+#include <climits>
 
 using namespace std;
 
-class MedianSet
-{
-    set<int32_t> lower_half; // Should contain floor(total_size / 2) elements
-    set<int32_t> upper_half; // Should contain ceil(total_size / 2) elements
-    void balance();
-
-public:
-    void insert(int32_t value);
-    void erase(int32_t value);
-    size_t size();
-    int32_t find_median();
-};
-
-void MedianSet::balance()
-{
-    while (lower_half.size() > upper_half.size())
-    {
-        upper_half.insert(*prev(lower_half.end()));
-        lower_half.erase(prev(lower_half.end()));
-    }
-    while (upper_half.size() > lower_half.size() + 1)
-    {
-        lower_half.insert(*upper_half.begin());
-        upper_half.erase(upper_half.begin());
-    }
-}
-
-void MedianSet::insert(int32_t value)
-{
-    if (upper_half.empty() || value >= *upper_half.begin())
-    {
-        upper_half.insert(value);
-    }
-    else
-    {
-        lower_half.insert(value);
-    }
-    balance();
-}
-
-void MedianSet::erase(int32_t value)
-{
-    if (lower_half.find(value) != lower_half.end())
-    {
-        lower_half.erase(value);
-    }
-    else if (upper_half.find(value) != upper_half.end())
-    {
-        upper_half.erase(value);
-    }
-    balance();
-}
-
-size_t MedianSet::size()
-{
-    return lower_half.size() + upper_half.size();
-}
-
-int32_t MedianSet::find_median()
-{
-    if (upper_half.empty())
-    {
-        throw std::runtime_error("MedianSet is empty");
-    }
-    return *upper_half.begin();
-}
-
-void fastIO()
-{
+int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    cout.tie(nullptr);
-}
-
-int main()
-{
-    fastIO();
-    int32_t r, c, h, w;
-    cin >> r >> c >> h >> w;
-    vector<vector<int32_t> > v(r, vector<int32_t>(c, 0));
-    for (int32_t i = 0; i < r; i++)
-    {
-        for (int32_t j = 0; j < c; j++)
-        {
-            cin >> v[i][j];
+    int t = 1;
+    vector<string> answers;
+    for (int hh = 1; hh <= t; ++hh) {
+        int r, c, h, w;
+        cin >> r >> c >> h >> w;
+        vector<vector<int>> grid(r, vector<int>(c));
+        for (int y = 0; y < r; ++y) {
+            for (int x = 0; x < c; ++x) {
+                cin >> grid[y][x];
+            }
         }
+        int answer = 0;
+        int start = 0;
+        int end = r * c;
+        vector<vector<int>> accumulated_sum(r + 1, vector<int>(c + 1, 0));
+        while (start + 1 < end) {
+            int mid = (start + end) / 2;
+            for (int y = 0; y < r; ++y) {
+                for (int x = 0; x < c; ++x) {
+                    if (grid[y][x] == mid) {
+                        accumulated_sum[y + 1][x + 1] = 0;
+                    } else {
+                        accumulated_sum[y + 1][x + 1] = (grid[y][x] - mid) / abs(grid[y][x] - mid);
+                    }
+                }
+            }
+            for (int y = 1; y <= r; ++y) {
+                for (int x = 1; x <= c; ++x) {
+                    accumulated_sum[y][x] += accumulated_sum[y][x - 1];
+                }
+            }
+            for (int y = 1; y <= r; ++y) {
+                for (int x = 1; x <= c; ++x) {
+                    accumulated_sum[y][x] += accumulated_sum[y - 1][x];
+                }
+            }
+            bool found = false;
+            for (int y = 0; y <= r - h; ++y) {
+                for (int x = 0; x <= c - w; ++x) {
+                    int bigger_than_mid_count = accumulated_sum[y + h][x + w]
+                                                - accumulated_sum[y + h][x]
+                                                - accumulated_sum[y][x + w]
+                                                + accumulated_sum[y][x];
+                    
+                    if (bigger_than_mid_count <= 0) {
+                        end = mid;
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) break;
+            }
+            if (not found) start = mid;
+        }
+        answer = end;
+        answers.push_back(to_string(answer));
     }
-    MedianSet median;
-    for (int32_t i = 0; i < h; i++)
-    {
-        for (int32_t j = 0; j < w; j++)
-        {
-            median.insert(v[i][j]);
-        }
+    for (const auto& ans : answers) {
+        cout << ans << '\n';
     }
-    int32_t highest_quality_rank = median.find_median();
-    for (int32_t i = 0; i < r - h + 1; i++)
-    {
-        if (i & 1)
-        {
-            for (int32_t j = c - w - 1; j >= 0; j--)
-            {
-                for (int32_t k = 0; k < h; k++)
-                {
-                    median.erase(v[i + k][j + w]);
-                    median.insert(v[i + k][j]);
-                }
-                highest_quality_rank = min(highest_quality_rank, median.find_median());
-            }
-            if (i != r - h)
-            {
-                for (int32_t k = 0; k < w; k++)
-                {
-                    median.erase(v[i][k]);
-                    median.insert(v[i + h][k]);
-                }
-                highest_quality_rank = min(highest_quality_rank, median.find_median());
-            }
-        }
-        else
-        {
-            for (int32_t j = 0; j < c - w; j++)
-            {
-                for (int32_t k = 0; k < h; k++)
-                {
-                    median.erase(v[i + k][j]);
-                    median.insert(v[i + k][j + w]);
-                }
-                highest_quality_rank = min(highest_quality_rank, median.find_median());
-            }
-            if (i != r - h)
-            {
-                for (int32_t k = c - 1; k >= c - w; k--)
-                {
-                    median.erase(v[i][k]);
-                    median.insert(v[i + h][k]);
-                }
-                highest_quality_rank = min(highest_quality_rank, median.find_median());
-            }
-        }
-    }
-    cout << highest_quality_rank << "\n";
 }
