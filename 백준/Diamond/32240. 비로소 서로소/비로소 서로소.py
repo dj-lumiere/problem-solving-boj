@@ -17,7 +17,7 @@ from functools import lru_cache, reduce
 import re
 from datetime import datetime, time, timedelta
 
-PRECOMPUTE_LIMIT = int(10 ** 4.4)
+PRECOMPUTE_LIMIT = int(10**6.5)
 mu_i_small = [0 for _ in range(PRECOMPUTE_LIMIT + 1)]
 mu_i_small[1] = 1
 sum_of_i_mu_i_small = [0 for _ in range(PRECOMPUTE_LIMIT + 1)]
@@ -38,10 +38,16 @@ def sum_of_i_mu_i(x):
     result = 1
     while i <= x:
         j = x // (x // i)
-        result -= (j * (j + 1) - i * (i - 1)) // 2 * sum_of_i_mu_i(x // i)
+        if x // i in sum_of_i_mu_i_big:
+            subcoeff = sum_of_i_mu_i_big[x // i]
+        else:
+            subcoeff = sum_of_i_mu_i(x // i)
+        result -= ((j * (j + 1) - i * (i - 1)) // 2) % MOD * subcoeff % MOD
+        result %= MOD
         i = j + 1
     sum_of_i_mu_i_big[x] = result
     return result
+
 
 
 with open(0, 'r') as f:
