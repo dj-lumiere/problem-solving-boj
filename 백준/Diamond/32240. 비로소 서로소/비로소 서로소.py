@@ -1,32 +1,22 @@
-from base64 import b64decode, b64encode
-from bisect import bisect_left, bisect_right
-from string import ascii_uppercase, ascii_lowercase
-from time import perf_counter_ns, sleep
-from datetime import datetime, time, timedelta
 from sys import setrecursionlimit, stdout, stderr
-from os import write
-from random import randint, shuffle
-from collections import deque, Counter
-from math import cos, comb, log, gcd, floor, log2, log10, pi, ceil, factorial, sin, sqrt, atan2, tau
-from heapq import heapify, heappush, heappop
-from itertools import combinations, permutations, combinations_with_replacement, product, zip_longest, chain, repeat, \
-    groupby
-from decimal import Decimal, getcontext
-from fractions import Fraction
-from functools import lru_cache, reduce
-import re
-from datetime import datetime, time, timedelta
+from array import array
 
-PRECOMPUTE_LIMIT = int(10**6.5)
-mu_i_small = [0 for _ in range(PRECOMPUTE_LIMIT + 1)]
-mu_i_small[1] = 1
-sum_of_i_mu_i_small = [0 for _ in range(PRECOMPUTE_LIMIT + 1)]
+MOD = 10**9+7
+PRECOMPUTE_LIMIT = int(10 ** 7.5)
+mu_i_small = array("b", [1 for _ in range(PRECOMPUTE_LIMIT + 1)])
+done_calculating = array("b", [0 for _ in range(PRECOMPUTE_LIMIT + 1)])
+sum_of_i_mu_i_small = array("q", [0 for _ in range(PRECOMPUTE_LIMIT + 1)])
 sum_of_i_mu_i_big = {}
 
+for i in range(2, PRECOMPUTE_LIMIT + 1):
+    if not done_calculating[i]:
+        for j in range(i, PRECOMPUTE_LIMIT + 1, i):
+            mu_i_small[j] *= -1
+            done_calculating[j] = True
+        for j in range(i * i, PRECOMPUTE_LIMIT + 1, i * i):
+            mu_i_small[j] = 0
 for i in range(1, PRECOMPUTE_LIMIT + 1):
-    for j in range(2 * i, PRECOMPUTE_LIMIT + 1, i):
-        mu_i_small[j] -= mu_i_small[i]
-    sum_of_i_mu_i_small[i] = sum_of_i_mu_i_small[i - 1] + mu_i_small[i] * i
+    sum_of_i_mu_i_small[i] = sum_of_i_mu_i_small[i - 1] + i * mu_i_small[i] % MOD
 
 
 def sum_of_i_mu_i(x):
@@ -38,11 +28,7 @@ def sum_of_i_mu_i(x):
     result = 1
     while i <= x:
         j = x // (x // i)
-        if x // i in sum_of_i_mu_i_big:
-            subcoeff = sum_of_i_mu_i_big[x // i]
-        else:
-            subcoeff = sum_of_i_mu_i(x // i)
-        result -= ((j * (j + 1) - i * (i - 1)) // 2) % MOD * subcoeff % MOD
+        result -= ((j * (j + 1) - i * (i - 1)) // 2) % MOD * sum_of_i_mu_i(x // i) % MOD
         result %= MOD
         i = j + 1
     sum_of_i_mu_i_big[x] = result
