@@ -1,4 +1,4 @@
-# [Gold IV] 수열의 비밀 (Hard) - 32286 
+# [Gold III] 수열의 비밀 (Hard) - 32286 
 
 [문제 링크](https://www.acmicpc.net/problem/32286) 
 
