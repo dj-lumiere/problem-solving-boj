@@ -10,18 +10,18 @@
 
 const int32_t MAX = 15'840'000;
 std::unordered_map<int32_t, int64_t> mobius_large;
-std::array<int32_t, MAX + 1> mobius_sum;
+std::vector<int32_t> mobius_sum(MAX+1, 1);
 
 void precompute_mobius()
 {
-    mobius_sum.fill(1);
+    //mobius_sum.fill(1);
     mobius_sum[0] = 0;
-    std::bitset<MAX + 1> is_prime = std::bitset<MAX + 1>().set();
+    std::bitset<MAX + 1> is_prime;
     for (int32_t i = 2; i <= MAX; i++) {
-        if (is_prime[i]) {
+        if (not is_prime[i]) {
             for (int32_t j = i; j <= MAX; j += i) {
                 mobius_sum[j] *= -1;
-                is_prime[j] = false;
+                is_prime[j] = true;
             }
             for (int64_t j = (int64_t) i * i; j <= MAX; j += (int64_t) i * i) {
                 mobius_sum[j] = 0;
