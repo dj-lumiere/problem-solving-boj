@@ -20,11 +20,11 @@ getcontext().prec = 1000
 
 
 def powered_sum(n, d):
-    if n <= d + 2:
-        return sum(pow(i, d, MOD) for i in range(n + 1)) % MOD
     smaller_sum = [0]
     for i in range(1, d + 3):
         smaller_sum.append(smaller_sum[-1] + pow(i, d, MOD))
+    if n <= d + 2:
+        return smaller_sum[n]
     numerator_accumulate = [n]
     for i in range(1, d + 3):
         numerator_accumulate.append(numerator_accumulate[-1] * (n - i) % MOD)
