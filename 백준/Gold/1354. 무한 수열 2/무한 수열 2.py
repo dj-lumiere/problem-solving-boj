@@ -1,23 +1,42 @@
-# 1351 무한 수열 2
+from sys import setrecursionlimit, stdout, stderr
 
-a_dict = dict()
-N, P, Q, X, Y = list(map(int, input().split(" ")))
-
-def a(N:int) -> int:
-    if N <= 0:
-        return 1
-    else:
-        if N // P - X > 0 and not N // P - X in a_dict:
-            a_dict[N//P-X]=a(N//P-X)
-        if N // Q - Y > 0 and not N // Q - Y in a_dict:
-            a_dict[N//Q-Y]=a(N//Q-Y)
-        if N // P - X > 0 and N // Q - Y > 0:
-            return a_dict[N//P-X]+a_dict[N//Q-Y]
-        elif N // P - X > 0 and N // Q - Y <= 0:
-            return a_dict[N//P-X]+1
-        elif N // P - X <= 0 and N // Q - Y > 0:
-            return 1+a_dict[N//Q-Y]
-        elif N // P - X <= 0 and N // Q - Y <= 0:
-            return 2
-
-print(a(N))
+with open(0, 'r') as f:
+    tokens = iter(f.read().split())
+    input = lambda: next(tokens, None)
+    print = lambda *args, sep="\n", end="\n": stdout.write(sep.join(map(str, args)) + end)
+    eprint = lambda *args, sep=" ", end="\n": stderr.write(sep.join(map(str, args)) + end)
+    fprint = lambda *args, sep=" ", end="\n", file: file.write(sep.join(map(str, args)) + end)
+    is_inbound = lambda pos_x, size_x, pos_y, size_y: 0 <= pos_x < size_x and 0 <= pos_y < size_y
+    DELTA = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    INF = 10 ** 18
+    MOD = 1_000_000_007
+    t = 1
+    answers = []
+    for hh in range(1, t + 1):
+        n = int(input())
+        p = int(input())
+        q = int(input())
+        x = int(input())
+        y = int(input())
+        results = dict()
+        results[0] = 1
+        stack = [n]
+        while stack:
+            i = stack.pop()
+            if i == 0:
+                continue
+            next_number1 = max(i // p - x, 0)
+            next_number2 = max(i // q - y, 0)
+            if next_number1 in results and next_number2 in results:
+                results[i] = results[next_number1] + results[next_number2]
+                continue
+            if i in results:
+                continue
+            if i not in results:
+                results[i] = 0
+            stack.append(i)
+            for z in {next_number1, next_number2}:
+                stack.append(z)
+        answer = results[n]
+        answers.append(answer)
+    print(*answers, sep="\n")
