@@ -20,6 +20,9 @@ with open(0, 'r') as f:
         stack = [(n, 0, 0)]
         while stack:
             size, x_start, y_start = stack.pop()
+            if size == 1:
+                paper_count[grid[y_start][x_start]] += 1
+                continue
             x_end, y_end = x_start + size, y_start + size
             plus_1_count = 0
             zero_count = 0
