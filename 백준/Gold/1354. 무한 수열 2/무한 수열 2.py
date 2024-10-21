@@ -21,7 +21,7 @@ with open(0, 'r') as f:
         x = int(input())
         y = int(input())
         results = dict()
-        THRESHOLD = 10 ** 6
+        THRESHOLD = 10 ** 7
         result_small = [0 for _ in range(THRESHOLD + 1)]
         result_small[0] = 1
         stack = [n]
