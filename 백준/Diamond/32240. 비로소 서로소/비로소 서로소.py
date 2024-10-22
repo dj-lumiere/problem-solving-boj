@@ -1,12 +1,12 @@
 from sys import setrecursionlimit, stdout, stderr
 from array import array
 
-PRECOMPUTE_LIMIT = int(10 ** 7*4)
-mu_i_small = array("b", [1 for _ in range(PRECOMPUTE_LIMIT + 1)])
-done_calculating = array("b", [0 for _ in range(PRECOMPUTE_LIMIT + 1)])
-sum_of_i_mu_i_small = array("i", [0 for _ in range(PRECOMPUTE_LIMIT + 1)])
-sum_of_i_mu_i_big = {}
 MOD = 10**9+7
+PRECOMPUTE_LIMIT = 5_000_000
+mu_i_small = [1 for _ in range(PRECOMPUTE_LIMIT + 1)]
+done_calculating = [0 for _ in range(PRECOMPUTE_LIMIT + 1)]
+sum_of_i_mu_i_small = [0 for _ in range(PRECOMPUTE_LIMIT + 1)]
+sum_of_i_mu_i_big = {}
 
 for i in range(2, PRECOMPUTE_LIMIT + 1):
     if not done_calculating[i]:
@@ -16,7 +16,7 @@ for i in range(2, PRECOMPUTE_LIMIT + 1):
         for j in range(i * i, PRECOMPUTE_LIMIT + 1, i * i):
             mu_i_small[j] = 0
 for i in range(1, PRECOMPUTE_LIMIT + 1):
-    sum_of_i_mu_i_small[i] = (sum_of_i_mu_i_small[i - 1] + (mu_i_small[i] * i) % MOD)%MOD
+    sum_of_i_mu_i_small[i] = sum_of_i_mu_i_small[i - 1] + i * mu_i_small[i] % MOD
 
 
 def sum_of_i_mu_i(x):
