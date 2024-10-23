@@ -1,37 +1,46 @@
-# 15682 삼차 방정식 풀기 2
+from collections import Counter
+from math import gcd
+from random import randint
+from sys import setrecursionlimit, stdout, stderr
 from decimal import Decimal, getcontext
-from typing import Callable
 
 getcontext().prec = 90
 
-T = int(input())
-for i in range(T):
-    # 계수 로딩
-    a, b, c, d = list(map(Decimal, input().split(" ")))
-    f: Callable[[Decimal], Decimal] = lambda x: a * x**3 + b * x**2 + c * x + d
-    f_prime: Callable[[Decimal], Decimal] = lambda x: 3 * a * x**2 + 2 * b * x + c
-    root_list: list[Decimal] = []
-    if d == 0:
-        root_list.append(Decimal(0))
-    else:
-        x: Decimal = Decimal(0)
-        while True:
-            next_x = x - f(x) / f_prime(x)
-            if abs(next_x - x) <= Decimal("0." + "0" * 30 + "1"):
-                root_list.append(x)
-                break
-            else:
-                x = next_x
-    a, b = a, b + a * root_list[-1]
-    b, c = b, c + b * root_list[-1]
-    c, d = c, d + c * root_list[-1]
-    det: Decimal = b**2 - 4 * a * c
-    if Decimal("-0." + "0" * 30 + "1") < det < Decimal("0"):
-        det = Decimal("0")
-    if det >= 0:
-        root_list.append((-b - det.sqrt()) / (2 * a))
-        root_list.append((-b + det.sqrt()) / (2 * a))
-    root_list = list(set([i.__round__(10) for i in root_list]))
-    root_list.sort()
-    root_list_for_answer = [f"{i:.10f}" for i in root_list]
-    print(*root_list_for_answer, sep=" ")
+with open(0, 'r') as f:
+    tokens = iter(f.read().split())
+    input = lambda: next(tokens, None)
+    print = lambda *args, sep="\n", end="\n": stdout.write(sep.join(map(str, args)) + end)
+    eprint = lambda *args, sep=" ", end="\n": stderr.write(sep.join(map(str, args)) + end)
+    fprint = lambda *args, sep=" ", end="\n", file: file.write(sep.join(map(str, args)) + end)
+    is_inbound = lambda pos_x, size_x, pos_y, size_y: 0 <= pos_x < size_x and 0 <= pos_y < size_y
+    DELTA = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    INF = 10 ** 18
+    MOD = 1_000_000_007
+    t = int(input())
+    answers = []
+    for hh in range(1, t + 1):
+        a, b, c, d = (int(Decimal(input())*10**11) for _ in range(4))
+        # ax^2+bx+c = -d/x
+        root_list = []
+        if d == 0:
+            root_list.append(0)
+        else:
+            for i in range(1, 1000000 + 1):
+                if d % i == 0:
+                    if a * i ** 2 + b * i ** 1 + c == -d // i:
+                        root_list.append(i)
+                        break
+                    elif a * i ** 2 + b * -i ** 1 + c == -d // (-i):
+                        root_list.append(-i)
+                        break
+        a, b = a, b + a * root_list[-1]
+        b, c = b, c + b * root_list[-1]
+        c, d = c, d + c * root_list[-1]
+        det = b ** 2 - 4 * a * c
+        if det >= 0:
+            root_list.append((-b - Decimal(det).sqrt()) / (2 * a))
+            root_list.append((-b + Decimal(det).sqrt()) / (2 * a))
+        root_list = list(set([i.__round__(10) for i in root_list]))
+        root_list.sort()
+        answers.append(" ".join(map(str, root_list)))
+    print(*answers, sep="\n")
