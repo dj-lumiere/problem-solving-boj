@@ -39,7 +39,7 @@ class FenwickTree:
 
 
 class SortedList:
-    block_size = 700
+    block_size = 1000
 
     def __init__(self, iterable=()):
         self.macro = []
@@ -47,7 +47,7 @@ class SortedList:
         self.micro_size = [0]
         self.fenwick = FenwickTree([0])
         self.size = 0
-        for item in iterable:
+        for item in sorted(iterable):
             self.insert(item)
 
     def insert(self, x):
@@ -126,7 +126,7 @@ with open(0, 'r') as f:
     answers = []
     for hh in range(t):
         n, m, k = (int(input()) for _ in range(3))
-        numbers = SortedList(sorted([int(input()) for _ in range(m)]))
+        numbers = SortedList([int(input()) for _ in range(m)])
         cheolsu_hand = [int(input()) for _ in range(k)]
         minsu_hand = [0 for _ in range(k)]
         for i, v in enumerate(cheolsu_hand):
