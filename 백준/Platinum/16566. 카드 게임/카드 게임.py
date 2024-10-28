@@ -126,7 +126,7 @@ with open(0, 'r') as f:
     answers = []
     for hh in range(t):
         n, m, k = (int(input()) for _ in range(3))
-        numbers = SortedList([int(input()) for _ in range(m)])
+        numbers = SortedList(sorted([int(input()) for _ in range(m)]))
         cheolsu_hand = [int(input()) for _ in range(k)]
         minsu_hand = [0 for _ in range(k)]
         for i, v in enumerate(cheolsu_hand):
