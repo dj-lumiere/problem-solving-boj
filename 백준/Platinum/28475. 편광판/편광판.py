@@ -6,6 +6,7 @@ from sys import stdout, stderr
 
 class SegmentTree:
     def __init__(self, members, default, index_start):
+        __slots__ = "member_count", "default", "tree_max_leve", "tree_capacity", "tree", "index_offset"
         # 어차피 필요한 멤버 갯수 빼고는 0으로 패딩 예정이라 깔끔하게 2의 승수가 될 수 있게 설정함
         self.member_count = len(members)
         self.default = default
@@ -54,22 +55,28 @@ class SegmentTree:
         index_end += self.index_offset
         index_end += 1
         result = self.default
-        numbers = [index_start]
+        left, right = index_start, 0
         first_target = 1 << (index_end.bit_length() - 1)
         for i in range(index_end.bit_length() - 1):
             if index_start & (1 << i) != 0 and (index_start + (1 << i) <= index_end):
                 index_start += 1 << i
-                numbers.append(index_start)
+                right = index_start
+                shift_length = (right - left).bit_length() - 1
+                result = self.merge_nodes(result, self.tree[left >> shift_length])
+                left = right
         if index_start == 0:
-            numbers.append(first_target)
+            right = first_target
+            shift_length = (right - left).bit_length() - 1
+            result = self.merge_nodes(result, self.tree[left >> shift_length])
+            left = right
             index_start = first_target
         for i in range(index_end.bit_length() - 2, -1, -1):
             if index_end & (1 << i) != 0 and index_start & (1 << i) == 0:
                 index_start += 1 << i
-                numbers.append(index_start)
-        for left, right in zip(numbers, numbers[1:]):
-            shift_length = (right - left).bit_length() - 1
-            result = self.merge_nodes(result, self.tree[left >> shift_length])
+                right = index_start
+                shift_length = (right - left).bit_length() - 1
+                result = self.merge_nodes(result, self.tree[left >> shift_length])
+                left = right
         return result
 
     def merge_nodes(self, left, right):
