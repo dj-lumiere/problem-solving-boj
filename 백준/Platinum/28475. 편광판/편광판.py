@@ -6,7 +6,6 @@ from sys import stdout, stderr
 
 class SegmentTree:
     def __init__(self, members, default, index_start):
-        __slots__ = "member_count", "default", "tree_max_leve", "tree_capacity", "tree", "index_offset"
         # 어차피 필요한 멤버 갯수 빼고는 0으로 패딩 예정이라 깔끔하게 2의 승수가 될 수 있게 설정함
         self.member_count = len(members)
         self.default = default
