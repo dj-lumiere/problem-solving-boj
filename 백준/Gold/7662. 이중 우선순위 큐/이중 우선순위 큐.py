@@ -1,21 +1,5 @@
-from base64 import b64decode, b64encode
 from bisect import bisect_left, bisect_right
-from string import ascii_uppercase, ascii_lowercase
-from time import perf_counter_ns, sleep
-from datetime import datetime, time, timedelta
-from sys import setrecursionlimit, stdout, stderr
-from os import write
-from random import randint, shuffle
-from collections import deque, Counter
-from math import cos, log, gcd, floor, log2, log10, pi, ceil, factorial, sin, sqrt, atan2, tau
-from heapq import heapify, heappush, heappop
-from itertools import combinations, permutations, combinations_with_replacement, product, zip_longest, chain, repeat, \
-    groupby
-from decimal import Decimal, getcontext
-from fractions import Fraction
-from functools import lru_cache, reduce
-import re
-from datetime import datetime, time, timedelta
+from sys import stdout, stderr
 
 """from https://github.com/cheran-senthil/PyRival/blob/master/pyrival/data_structures/SortedList.py"""
 
