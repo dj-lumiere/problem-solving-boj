@@ -1,7 +1,7 @@
 # 1987 알파벳
 R, C = list(map(int, input().split(" ")))
-graph: list[list[str]] = [list(input()) for _ in range(R)]
-delta_list: list[tuple[int, int]] = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+graph = [list(input()) for _ in range(R)]
+delta_list = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 
 def iterative_dfs():
