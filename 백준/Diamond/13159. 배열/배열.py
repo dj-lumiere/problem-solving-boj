@@ -173,6 +173,29 @@ class SplayTree:
             self.reverse_range(l, r)
             self.reverse_range(l + c, r)
             self.reverse_range(l, l + c - 1)
+            
+    def find_key(self, node, key):
+        if node is None:
+            return None
+        self.push_down(node)
+        if node.key == key:
+            return node
+        # Assuming it's a BST; adjust comparisons as needed
+        # If not a BST, perform pre-order traversal
+        # For now, we'll do a pre-order traversal
+        left_result = self.find_key(node.left, key)
+        if left_result:
+            return left_result
+        return self.find_key(node.right, key)
+
+    def index(self, key):
+        node = self.find_key(self.root, key)
+        if node is None:
+            raise ValueError(f"Key {key} not found in the tree")
+        self.splay(node)
+        # Return the position (index) in the in-order traversal
+        left_size = node.left.size if node.left else 0
+        return left_size
 
 
 with open(0, 'r') as f:
@@ -204,7 +227,6 @@ with open(0, 'r') as f:
                 answers.append(f"{st[i]}")
             elif op == 4:
                 x = int(input())
-                st.splay(st.tree[x])
-                answers.append(f"{st.root.left.size}")
+                answers.append(f"{st.index(x)}")
         answers.append(" ".join(map(str, st)))
     print(*answers, sep="\n")
