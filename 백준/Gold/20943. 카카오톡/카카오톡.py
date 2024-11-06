@@ -1,18 +1,5 @@
-from collections import deque, Counter
-from heapq import heappop, heappush
-from itertools import product, permutations, combinations
 from math import gcd
 from sys import stderr, stdout
-
-
-def tuple_to_integer(a):
-    x, y = a
-    if x < 0:
-        x += 0xffffffff
-    if y < 0:
-        y += 0xffffffff
-    return (x << 32) + y
-
 
 with open(0, 'r') as f:
     tokens = iter(f.read().split())
@@ -55,7 +42,10 @@ with open(0, 'r') as f:
             g2 = gcd(*offset)
             x, y = offset
             offset = [x // g2, y // g2]
-            line_corrected.append((tuple_to_integer(slope), tuple_to_integer(offset)))
+            a, b = slope
+            c, d = offset
+            line_corrected.append((((a + 0xffffffff if a < 0 else a) << 32) + (b + 0xffffffff if b < 0 else b),
+                                   ((c + 0xffffffff if c < 0 else c) << 32) + (d + 0xffffffff if d < 0 else d)))
         slope_info = {}
         full_line_info = {}
         for (a, b) in line_corrected:
