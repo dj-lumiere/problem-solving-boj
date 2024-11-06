@@ -24,42 +24,24 @@ with open(0, 'r') as f:
         answer = 0
         for a, b, c in lines:
             slope = [a, b]
-            offset = [c, 1]
             if a == 0:
-                offset = [c, b]
                 slope = [0, 1]
             elif b == 0:
-                offset = [c, a]
                 slope = [1, 0]
             elif a < 0:
                 slope = [-a, -b]
-                offset = [-c, 1]
             g = gcd(*slope)
             x, y = slope
             slope = [x // g, y // g]
-            x, y = offset
-            offset = [x, g * y]
-            g2 = gcd(*offset)
-            x, y = offset
-            offset = [x // g2, y // g2]
             a, b = slope
-            c, d = offset
-            line_corrected.append((((a + 0xffffffff if a < 0 else a) << 32) + (b + 0xffffffff if b < 0 else b),
-                                   ((c + 0xffffffff if c < 0 else c) << 32) + (d + 0xffffffff if d < 0 else d)))
+            line_corrected.append(((a + 0xffffffff if a < 0 else a) << 32) + (b + 0xffffffff if b < 0 else b))
         slope_info = {}
-        full_line_info = {}
-        for (a, b) in line_corrected:
+        for a in line_corrected:
             if a not in slope_info:
                 slope_info[a] = 0
-            if a not in full_line_info:
-                full_line_info[a] = {}
-            if b not in full_line_info[a]:
-                full_line_info[a][b] = 0
             slope_info[a] += 1
-            full_line_info[a][b] += 1
-        for a, v in full_line_info.items():
-            for b, v2 in v.items():
-                answer += n - slope_info[a]
+        for a, v in slope_info.items():
+            answer += (n - v) * v
         answer //= 2
         answers.append(f"{answer}")
     print(*answers, sep="\n")
