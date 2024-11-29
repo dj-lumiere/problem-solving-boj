@@ -17,6 +17,6 @@ with open(0, 'r') as f:
         if N % 2 == 0:
             answer = "SciComLove"
         else:
-            answer = "evoLmocCiS"
+            answer = "evoLmoCicS"
         answers.append(f"{answer}")
     print(*answers, sep="\n")
