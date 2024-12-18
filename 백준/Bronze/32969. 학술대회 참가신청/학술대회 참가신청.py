@@ -1,6 +1,5 @@
-from decimal import Decimal, getcontext
-from fractions import Fraction
-from sys import stdout, stderr
+from decimal import getcontext
+from sys import stderr, stdout
 
 getcontext().prec = 30
 
@@ -29,7 +28,7 @@ with open(0, 'r') as f:
         title = input().lower().split()
         dh_words = ['social', 'history', 'language', 'literacy']
         bd_words = ['bigdata', 'public', 'society']
-        if any(word in title for word in dh_words):
+        if any(any(word2 in word for word2 in dh_words) for word in title):
             answer = 'digital humanities'
         else:
             answer = 'public bigdata'
