@@ -25,24 +25,28 @@ with open(0, 'r') as f:
     t = int(input())
     x = ["ZERO", "ONE", 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE']
     letters = [[s2.count(chr(ord("A") + i)) for i in range(26)] for s2 in x]
+    only_once = [0 for i in range(26)]
+    for i in letters:
+        for j, v in enumerate(i):
+            only_once[j] += v
     answers = []
     for hh in range(t):
         s = input()
         freq = [s.count(chr(ord("A") + i)) for i in range(26)]
-        stack = [([], freq[:])]
+        stack = [([0 for _ in range(10)], freq[:])]
         result = []
         while stack:
             current, current_freq = stack.pop()
-            eprint(current, current_freq)
             if all(i == 0 for i in current_freq):
                 result = current
                 break
             for i, v in enumerate(letters):
                 if any(v1 < v2 for v1, v2 in zip(current_freq, v)):
                     continue
-                next_number = current[:] + [i]
+                next_number = current[:]
+                next_number[i] += 1
                 next_freq = [v1 - v2 for v1, v2 in zip(current_freq, v)]
                 stack.append((next_number, next_freq))
-        answer = f"Case #{hh + 1}: " + "".join(map(str, sorted(result)))
+        answer = f"Case #{hh + 1}: " + "".join(map(lambda x: f"{x[0]}" * x[1], enumerate(result)))
         answers.append(f"{answer}")
     print(*answers, sep="\n")
