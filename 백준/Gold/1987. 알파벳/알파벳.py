@@ -5,12 +5,19 @@ delta_list = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 
 def iterative_dfs():
-    visited_alphabet = (1 << 27) - 1
-    stack = [(0, 0, visited_alphabet, 0)]  # pos_x, pos_y, available_alphabet, count
+    visited_alphabet = (1 << 26) - 1
+    visited_bitmask = (1 << 26) - 1
+    pos_bitmask = (1 << 5) - 1
+    # C CCCC CCCC XXXX XYYY YYVV VVVV VVVV VVVV VVVV VVVV VVVV
+    stack = [visited_alphabet]
     max_count = 0
 
     while stack:
-        pos_x, pos_y, available_alphabet, count = stack.pop()
+        state = stack.pop()
+        available_alphabet = state & visited_bitmask
+        pos_y = (state >> 26) & pos_bitmask
+        pos_x = (state >> 31) & pos_bitmask
+        count = state >> 36
         alphabet_order = ord(graph[pos_y][pos_x]) - ord("A")
         
         if available_alphabet & (1 << alphabet_order):
@@ -20,7 +27,7 @@ def iterative_dfs():
             for dx, dy in delta_list:
                 new_x, new_y = pos_x + dx, pos_y + dy
                 if 0 <= new_x < C and 0 <= new_y < R:
-                    stack.append((new_x, new_y, available_alphabet, count + 1))
+                    stack.append(((count + 1) << 36) + (new_x << 31) + (new_y << 26) + available_alphabet)
             
             available_alphabet ^= (1 << alphabet_order)
 
