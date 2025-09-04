@@ -1,6 +1,6 @@
 # 1987 알파벳
 R, C = list(map(int, input().split(" ")))
-graph = [list(input()) for _ in range(R)]
+graph = [list(map(lambda x: ord(x)-ord("A"), input())) for _ in range(R)]
 delta_list = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 
@@ -18,7 +18,7 @@ def iterative_dfs():
         pos_y = (state >> 26) & pos_bitmask
         pos_x = (state >> 31) & pos_bitmask
         count = state >> 36
-        alphabet_order = ord(graph[pos_y][pos_x]) - ord("A")
+        alphabet_order = graph[pos_y][pos_x]
         
         if available_alphabet & (1 << alphabet_order):
             available_alphabet ^= (1 << alphabet_order)
