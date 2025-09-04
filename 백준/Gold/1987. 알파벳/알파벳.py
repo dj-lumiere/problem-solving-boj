@@ -15,9 +15,9 @@ def iterative_dfs():
     while stack:
         state = stack.pop()
         available_alphabet = state & visited_bitmask
-        pos_y = (state >> 26) & pos_bitmask
-        pos_x = (state >> 31) & pos_bitmask
-        count = state >> 36
+        pos_y = (state >> 32) & pos_bitmask
+        pos_x = (state >> 40) & pos_bitmask
+        count = state >> 48
         alphabet_order = graph[pos_y][pos_x]
         
         if available_alphabet & (1 << alphabet_order):
@@ -27,7 +27,7 @@ def iterative_dfs():
             for dx, dy in delta_list:
                 new_x, new_y = pos_x + dx, pos_y + dy
                 if 0 <= new_x < C and 0 <= new_y < R:
-                    stack.append(((count + 1) << 36) + (new_x << 31) + (new_y << 26) + available_alphabet)
+                    stack.append(((count + 1) << 48) + (new_x << 40) + (new_y << 32) + available_alphabet)
             
             available_alphabet ^= (1 << alphabet_order)
 
