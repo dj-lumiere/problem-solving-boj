@@ -1,0 +1,1 @@
+print(*(["I love DGU"]*int(input())),sep="\n")

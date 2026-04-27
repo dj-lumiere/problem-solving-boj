@@ -1,0 +1,1 @@
+print(["Oh My God!", "Oh My God!", "Oh My God!", "Oh My God!", "Oh My God!", "Oh My God!", "Success!", "Success!"][int(input())])

@@ -1,0 +1,47 @@
+from bisect import bisect_left, bisect_right
+from string import ascii_uppercase, ascii_lowercase
+from time import perf_counter_ns, sleep
+from datetime import datetime, time, timedelta
+from sys import setrecursionlimit
+from os import write
+from random import randint, shuffle
+from collections import deque, Counter
+from math import comb, lcm, log, gcd, floor, log2, log10, pi, ceil, factorial, sqrt
+from heapq import heappush, heappop
+from itertools import combinations, permutations, combinations_with_replacement, product, zip_longest
+from decimal import Decimal, getcontext
+from fractions import Fraction
+from functools import lru_cache, reduce
+import re
+
+getcontext().prec = 1000
+
+# with open(0, 'rb') as f:
+with open(0, 'rb') as f:
+    tokens = iter(f.read().split())
+    input = lambda: next(tokens)
+    print = lambda x: write(1, "\n".join(x).strip().encode())
+    eprint = lambda *args, **sep: write(2, (" ".join(map(str, args)) + "\n").encode())
+    answers = ["" for _ in range(0)]
+    INF = 10 ** 18
+    MOD = 1_000_000_007
+    t = 1
+    for hh in range(t):
+        moves = [input().decode() for _ in range(36)]
+        answer = "Valid"
+        if any(v != 1 for v in Counter(moves).values()):
+            answer = "Invalid"
+        moves.append(moves[0])
+        for i, j in zip(moves, moves[1:]):
+            if answer == "Invalid":
+                break
+            x1, y1 = ord(i[0]) - ord("A"), ord(i[1]) - ord("1")
+            x2, y2 = ord(j[0]) - ord("A"), ord(j[1]) - ord("1")
+            for dx, dy in [(1, 2), (-1, 2), (1, -2), (-1, -2), (2, 1), (-2, 1), (2, -1), (-2, -1)]:
+                if x2 == x1 + dx and y2 == y1 + dy:
+                    break
+            else:
+                answer = "Invalid"
+                break
+        answers.append(f"{answer}")
+    print(answers)
